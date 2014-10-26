@@ -218,7 +218,7 @@ function info(msg) {
 function authorizeUser() {
     var client_id = '31469b011d4941bf8dd4ac9cf8495bac';
     var redirect_uri = 'http://localhost:8000/';
-    var redirect_uri = 'https://static.echonest.com/SortYourMusic';
+    var redirect_uri = 'http://static.echonest.com/SortYourMusic';
     var scopes = 'playlist-read-private playlist-modify-private playlist-modify-public';
 
     var url = 'https://accounts.spotify.com/authorize?client_id=' + client_id +
@@ -346,7 +346,6 @@ function fetchENTrackInfo(ids, callback) {
 
 function updateTable(tracks) {
     $("#single-playlist-contents").show();
-    console.log('update table', tracks.items.length);
     info("");
     _.each(tracks.items, function(item, i) {
         var track = item.track;
@@ -470,7 +469,6 @@ function loadPlaylists(uid) {
 function playTrack(track) {
     audio.attr('src', track.preview_url);
     audio.get(0).play();
-    console.log('playing ', track.title);
 }
 
 function stopTrack() {
@@ -481,7 +479,6 @@ function getSortedUrisFromTable(tracks, table) {
     var rows = table.rows()[0];
     var tids = [];
     _.each(rows, function(row, i) {
-        console.log(i, row, tracks[row].track.name);
         tids.push(tracks[row].track.uri);
     });
     return tids;
@@ -489,7 +486,6 @@ function getSortedUrisFromTable(tracks, table) {
 
 
 function savePlaylist() {
-    console.log('savePlaylist');
     var tids = getSortedUrisFromTable(curPlaylist.tracks.items, songTable);
     var curOrder = songTable.order();
     if (curOrder.length > 0) {
@@ -506,10 +502,8 @@ function saveTidsToPlaylist(playlist, tids, first, callback) {
     var url = "https://api.spotify.com/v1/users/" + playlist.owner.id + 
          "/playlists/" + playlist.id + '/tracks';
 
-    console.log('save', first, this_tids.length, remaining.length);
     if (first) {
         var json = { "uris" : this_tids };
-        console.log('url', url, playlist);
         callSpotify('PUT', url, json, function(ok, data) {
             if (ok) {
                 if (remaining.length > 0) {
@@ -542,8 +536,12 @@ function saveTidsToPlaylist(playlist, tids, first, callback) {
 function setNeedsSave(state) {
     if (state) {
         $("#save").attr('disabled', false);
+        $("#save").removeClass('btn-warning');
+        $("#save").addClass('btn-primary');
     } else {
         $("#save").attr('disabled', true);
+        $("#save").addClass('btn-warning');
+        $("#save").removeClass('btn-primary');
     }
 }
 
@@ -571,7 +569,6 @@ function initTable() {
     });
 
     $("#song-table tbody").on( 'click', 'tr', function () {
-        console.log('clicked', $(this));
         if ( $(this).hasClass('selected') ) {
             $(this).removeClass('selected');
             var row = songTable.row( $(this) );
@@ -582,7 +579,6 @@ function initTable() {
             var row = songTable.row( $(this) );
             var rowData = row.data();
             var track = rowData[rowData.length - 1];
-            console.log('track clicked', track);
             playTrack(track);
         }
     } );
