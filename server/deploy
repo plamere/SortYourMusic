@@ -1,0 +1,2 @@
+LABS=labs2.echonest.com
+rsync -avz --exclude .git --exclude .svn --exclude '*.pkl' --exclude archive --exclude '*.pyc' * echonest@$LABS:apps/SortYourMusic

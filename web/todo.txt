@@ -1,0 +1,21 @@
+deploy
+server prefill
+
+done:
+    sort by duration
+    pointer cursors
+    improve user flow (no save until modified, fast back to playlist list)
+    add 'open playlist in spotify' button
+    more save testing
+    fix nans (weezer at redbull)
+    improved info and error messages
+    server stats
+    figure out datatables cdn or local
+    add faq
+
+No:
+    Add col for date added for songs
+
+later:
+    manually delete row
+    dup detection

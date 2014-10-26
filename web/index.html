@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link type="text/css" href="styles.css" rel="stylesheet" />
+    <link href="dist/sp-bootstrap.min.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" type="text/css"
+    href="//cdn.datatables.net/plug-ins/380cb78f450/integration/bootstrap/3/dataTables.bootstrap.css">
+    <link rel="shortcut icon" href="images/favicon.png">
+    <title>Sort Your Music</title>
+    <!-- Custom styles for this template -->
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+  <body >
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">
+            <span class="navbar-logo">Spotify</span>
+            <span class="navbar-title">Sort Your Music</span>
+          </a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <a href="http://www.spotify.com" class="btn btn-primary navbar-btn navbar-right">Get
+          Spotify</a>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+      <div id='intro'>
+      <div id='main' class="top worker jumbotron jumbotron-hero container-fluid">
+          <div  id="jumbo-dialog">
+            <h1 id='ttitle' >Sort Your Music</h1>
+            <p id='ttext'>
+                Sort your Spotify playlists by any of 
+                a wide range of musical attributes such as tempo, loudness, 
+                energy, danceability, popularity and more.
+            </p>
+            <p>  Login with your Spotify account to get started</p>
+            <p><a class="btn btn-primary btn-lg" id='go' role="button">Login with Spotify</a></p>
+          </div>
+      </div>
+
+        <div class="container worker ">
+          <div class="row features">
+             <div class="col-md-offset-2 col-md-8">
+                    <h2 class="text-center">Get your playlists in order</h2>
+                    <p>
+                    With <b> Sort Your Playlists </b> you can easily order the songs
+                    in any of your playlists be a wide range of parameters. Just
+                    follow these steps:
+                    </p>
+                    <ol>
+                        <li> <b> Login </b> with your Spotify credentials 
+                        <li> <b> Pick </b> your playlist
+                        <li> <b> Sort </b> the playlist by clicking on the column headings in
+                        the playlist table
+                        <li>  <b> Save </b> the sorted playlist to Spotify
+                    </ol>
+
+                    <h2 class="text-center">Tap into the power of The Echo Nest</h2>
+                    <p>
+                    <b> Sort Your Music </b> lets you sort your playlist
+                    based on a number of Echo Nest song attributes including:
+                    </p>
+
+                    <ol>
+                        <li> <b> Beats Per Minute (BPM)</b> - The tempo of the
+                        song.
+                        <li> <b> Energy</b> - The energy of a song - the higher
+                        the value, the more energtic.
+                        song
+                        <li> <b> Danceability</b> - The higher the value, the
+                        easier it is to dance to this song.
+                        <li> <b> Loudness </b> - The higher the value, the
+                        louder the song.
+                        <li> <b> Length </b> - The duration of the song.
+                        <li> <b> Acoustic </b> - The higher the value the more
+                        acoustic the song is.
+                        <li> <b> Valence </b> - The higher the value the more positive
+                        the song is.
+                        <li> <b> Popularity </b> - The higher the value the more
+                        popular the song is.
+                    </ol>
+
+                    <h2 class="text-center">FAQ</h2>
+                    <p>
+                        Here are some answers to questions about <b> Sort Your
+                        Music </b>
+                    </p>
+                    <ol>
+                        <li> <b> How was this built? </b> This was created using
+                        the <a href="http://developer.echonest.com">Echo
+                        Nest</a> and the <a
+                        href="http://developer.spotify.com">Spotify</a> APIs.
+
+                        <li> <b> Where can I learn more about the Echo Nest song
+                        attributes?</b> See <a
+                        href="http://developer.echonest.com/acoustic-attributes.html">
+                        Acoustic Attributes Overview </a>
+                        <li> <b> Can you add more attributes to the app?  </b>
+                        Yes, but it is a tradeoff between display space,
+                        complexity and utility. Let me know which attributes
+                        you'd like to see.
+                        <li> <b> Any more features planned?</b> - Yes, I'd like
+                        to add a few more features such as:
+                            <ul>
+                                <li> Duplicate track removal
+                                <li> Manual reordering, addition, and deletion.
+                            </ul>
+                        If you have any ideas for new feature, let me know.
+                    </ol>
+              </div> 
+          </div>
+        </div>
+
+      <div class="top jumbotron container-fluid">
+          <p id='info' class="text-center"></p>
+
+          <div class="worker" id='playlists'> 
+                <h2 class="prompt" > Pick a playlist: </h2>
+                <img class='spinner' width='100px' src='images/ajaxSpinner.gif'>
+                <div id='playlist-list'> </div>
+          </div>
+
+          <div class="worker" id='single-playlist'> 
+                <h2> <a id='playlist-title'></a></h2>
+                <img class='spinner2' width='100px' src='images/ajaxSpinner.gif'>
+                <div id='single-playlist-contents'>
+                    <div>
+                        <a class="btn btn-primary btn-sm pull-right" 
+                            id='save' role="button">Save Playlist</a>
+                        <a class="btn btn-primary btn-sm pull-left" id='pick'
+                            role="button">back</a>
+                    </div>
+                    <table id='song-table' class="hover table table-condensed table-bordered table-striped">  
+                        <thead>
+                            <th> # </th>
+                            <th> Title </th>
+                            <th> Artist </th>
+                            <th> BPM </th>
+                            <th> Energy </th>
+                            <th> Dance </th>
+                            <th> Loud </th>
+                            <th> Length </th>
+                            <th> Acoustic </th>
+                            <th> Valence </th>
+                            <th> Pop. </th>
+                        </thead>
+                        <tbody> </tbody>
+                        <tfoot> </tfoot>
+                    </table>
+                </div>
+          </div>
+        </div>
+
+    <div id="footer">
+      <div class="container text-center">
+            <p class="text-muted">
+                Powered by <a href="http://spotify.com">Spotify</a>,
+                and <a href="http://the.echonest.com">The Echo Nest</a>,
+                Created by <a href="http://twitter.com/plamere">@plamere</a>.
+            </p>
+      </div>
+    </div>
+    <script src="lib/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" charset="utf8"
+        src="//cdn.datatables.net/1.10.3/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8"
+        src="//cdn.datatables.net/plug-ins/380cb78f450/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+    <script type="text/javascript" charset="utf8"
+        src="//cdn.datatables.net/plug-ins/380cb78f450/sorting/time.js"></script>
+    <script src="lib/bootstrap.min.js"></script>
+    <script src="lib/underscore-min.js"></script>
+
+<script>
+"use strict";
+var apiHost = 'http://localhost:8235'
+var apiHost = 'http://labs2.echonest.com/SortYourMusic'
+var accessToken = null;
+var curUserID = null;
+var curPlaylist = null;
+var audio = $("<audio>");
+var songTable;
+
+// we keep track of which column we last sorted on so we
+// can enable or disable the save button as appropriate
+var savedOrder = [0, 'asc'];
+
+function error(msg) {
+    info(msg);
+}
+
+function info(msg) {
+    $("#info").text(msg);
+}
+
+function authorizeUser() {
+    var client_id = '31469b011d4941bf8dd4ac9cf8495bac';
+    var redirect_uri = 'http://static.echonest.com/SortYourMusic';
+    var redirect_uri = 'http://localhost:8000/';
+    var scopes = 'playlist-read-private playlist-modify-private playlist-modify-public';
+
+    var url = 'https://accounts.spotify.com/authorize?client_id=' + client_id +
+        '&response_type=token' +
+        '&scope=' + encodeURIComponent(scopes) + 
+        '&redirect_uri=' + encodeURIComponent(redirect_uri);
+    document.location = url;
+}
+
+function parseArgs() {
+    var hash = location.hash.replace(/#/g, '');
+    var all = hash.split('&');
+    var args = {};
+    _.each(all, function(keyvalue) {
+        var kv = keyvalue.split('=');
+        var key = kv[0];
+        var val = kv[1];
+        args[key] = val;
+    });
+    return args;
+}
+
+function callSpotify(type, url, json, callback) {
+    $.ajax(url, {
+        type: type,
+        data: JSON.stringify(json),
+        dataType: 'json',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json'
+        },
+        success: function(r) {
+            callback(true, r);
+        },
+        error: function(r) {
+            // 2XX status codes are good, but some have no
+            // response data which triggers the error handler
+            // convert it to goodness.
+            if (r.status >= 200 && r.status < 300) {
+                callback(true, r);
+            } else {
+                callback(false, r);
+            }
+        }
+    });
+}
+
+function getSpotify(url, data, callback) {
+    $.ajax(url, {
+        dataType: 'json',
+        data: data,
+        headers: {
+            'Authorization': 'Bearer ' + accessToken
+        },
+        success: function(r) {
+            callback(r);
+        },
+        error: function(r) {
+            callback(null);
+        }
+    });
+}
+
+function showPlaylists() {
+    $(".worker").hide();
+    $("#playlists").show();
+}
+
+function fetchSinglePlaylist(playlist) {
+    $(".worker").hide();
+    $("#single-playlist").show();
+    $("#single-playlist-contents").hide();
+    $(".spinner2").show();
+    $("#song-table tbody").empty();
+    window.scrollTo(0,0);
+    songTable.clear();
+    songTable.order([0, 'asc']);
+    setNeedsSave(false);
+
+
+    curPlaylist = playlist;
+    curPlaylist.tracks.items = [];
+
+    $("#playlist-title").text(playlist.name);
+    $("#playlist-title").attr('href', playlist.uri);
+
+     var url = "https://api.spotify.com/v1/users/" + playlist.owner.id 
+        + "/playlists/" + playlist.id
+
+    var data = {
+        limit:100,
+        offset:0
+    }
+    getSpotify(url, data, fetchPlaylistTracks);
+}
+
+function findDuplicates(playlist) {
+    var ids = {};
+    var dups = [];
+    _.each(playlist.tracks.items, function(item, i) {
+        var track = item.track.id;
+        if (id in ids) {
+            dups.push(id);
+        }
+        ids[id] = 1;
+    });
+    return dups;
+}
+
+function formatDuration(dur) {
+    var mins = Math.floor(dur / 60)
+    var secs = Math.floor(dur - mins * 60);
+    var ssecs = secs.toString();
+    if (secs < 10) {
+        ssecs = '0' + ssecs;
+    }
+    return mins + ":" + ssecs;
+}
+
+function fetchENTrackInfo(ids, callback) {
+    var cids = ids.join(',');
+    var url = apiHost + '/songs';
+    $.getJSON(url, { ids : cids}, callback);
+}
+
+function updateTable(tracks) {
+    $("#single-playlist-contents").show();
+    console.log('update table', tracks.items.length);
+    info("");
+    _.each(tracks.items, function(item, i) {
+        var track = item.track;
+        addTrack(songTable, track);
+    });
+    songTable.draw();
+    $(".spinner2").hide();
+}
+
+function addTrack(table,track) {
+    if ('tempo' in track.enInfo) {
+        table.row.add([
+                track.which + 1, 
+                track.name, 
+                track.artists[0].name,
+                Math.round(track.enInfo.tempo),
+                Math.round(track.enInfo.energy * 100),
+                Math.round(track.enInfo.danceability * 100),
+                Math.round(track.enInfo.loudness),
+                formatDuration(track.enInfo.duration),
+                Math.round(track.enInfo.acousticness * 100),
+                Math.round(track.enInfo.valence * 100),
+                Math.round(track.enInfo.song_hotttnesss * 100),
+                track
+        ]);
+    } else {
+        table.row.add([
+                track.which + 1, 
+                track.name, 
+                track.artists[0].name,
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                track
+        ]);
+    }
+}
+
+function fetchPlaylistTracks(data) {
+    var ids = [];
+
+    var tracks = data.tracks ? data.tracks : data;
+    _.each(tracks.items, function(item, i) {
+        item.track.which = curPlaylist.tracks.items.length;
+        curPlaylist.tracks.items.push(item);
+        ids.push(item.track.id);
+    });
+    fetchENTrackInfo(ids, function(enInfo) {
+        _.each(enInfo.songs, function(song, i) {
+            tracks.items[i].track.enInfo = song;
+        });
+        updateTable(tracks);
+    });
+    if (tracks.next) {
+        getSpotify(tracks.next, null, fetchPlaylistTracks);
+    } else {
+    }
+}
+
+function fetchPlaylists(uid, callback) {
+    $("#playlist-list").empty();
+    $(".prompt").hide();
+    $(".spinner").show();
+
+    info("Getting your playlists");
+    var url = 'https://api.spotify.com/v1/users/' + uid + '/playlists';
+    var data = {
+        limit:50,
+        offset:0
+    }
+    getSpotify(url, data, callback);
+}
+
+function fetchCurrentUserProfile(callback) {
+    var url = 'https://api.spotify.com/v1/me';
+    getSpotify(url, null, callback);
+}
+
+function goodPlaylist(playlist) {
+    return playlist.tracks.total > 0 && playlist.owner.id == curUserID;
+}
+
+function playlistLoaded(playlists) {
+    var pl = $("#playlist-list");
+    $(".prompt").show();
+    $(".spinner").hide();
+    if (playlists) {
+        info("");
+        _.each(playlists.items, function(playlist) {
+            if (goodPlaylist(playlist)) {
+                var div = $("<div>");
+                var li = $("<a>").text(playlist.name 
+                    + " (" + playlist.tracks.total + " tracks)");
+                li.addClass('hoverable');
+                div.append(li);
+                pl.append(div);
+
+                li.on('click', function() {
+                    fetchSinglePlaylist(playlist);
+                });
+            }
+        });
+        if (playlists.next) {
+            getSpotify(playlists.next, null, playlistLoaded);
+        }
+    } else {
+        error("Sorry, I couldn't find your playlists");
+    }
+}
+
+function loadPlaylists(uid) {
+    $("#playlists").show();
+    fetchPlaylists(uid, playlistLoaded);
+}
+
+function playTrack(track) {
+    audio.attr('src', track.preview_url);
+    audio.get(0).play();
+    console.log('playing ', track.title);
+}
+
+function stopTrack() {
+    audio.get(0).pause();
+}
+
+function getSortedUrisFromTable(tracks, table) {
+    var rows = table.rows()[0];
+    var tids = [];
+    _.each(rows, function(row, i) {
+        console.log(i, row, tracks[row].track.name);
+        tids.push(tracks[row].track.uri);
+    });
+    return tids;
+}
+
+
+function savePlaylist() {
+    console.log('savePlaylist');
+    var tids = getSortedUrisFromTable(curPlaylist.tracks.items, songTable);
+    var curOrder = songTable.order();
+    if (curOrder.length > 0) {
+        savedOrder = curOrder[0];
+    }
+    saveTidsToPlaylist(curPlaylist, tids, true, function() {
+        setNeedsSave(false);
+    });
+}
+
+function saveTidsToPlaylist(playlist, tids, first, callback) {
+    var this_tids = tids.slice(0, 100);
+    var remaining = tids.slice(100);
+    var url = "https://api.spotify.com/v1/users/" + playlist.owner.id + 
+         "/playlists/" + playlist.id + '/tracks';
+
+    console.log('save', first, this_tids.length, remaining.length);
+    if (first) {
+        var json = { "uris" : this_tids };
+        console.log('url', url, playlist);
+        callSpotify('PUT', url, json, function(ok, data) {
+            if (ok) {
+                if (remaining.length > 0) {
+                    saveTidsToPlaylist(playlist, remaining, false, callback);
+                } else {
+                    callback(true);
+                }
+            } else {
+                error("Trouble saving to the playlist"); 
+                callback(false);
+            }
+        });
+    } else {
+        var json = this_tids;
+        callSpotify('POST', url, json, function(ok, data) {
+            if (ok) {
+                if (remaining.length > 0) {
+                    saveTidsToPlaylist(playlist, remaining, false, callback);
+                } else {
+                    callback(true);
+                }
+            } else {
+                error("Trouble saving to the playlist"); 
+                callback(false);
+            }
+        });
+    }
+}
+
+function setNeedsSave(state) {
+    if (state) {
+        $("#save").attr('disabled', false);
+    } else {
+        $("#save").attr('disabled', true);
+    }
+}
+
+function initTable() {
+    var table = $("#song-table").DataTable( {
+            paging: false,
+            searching: false,
+            // scrollY:'300px',
+            info:false,
+            columnDefs: [
+                { type : "time-uni", targets:7},
+            ]
+     });
+
+    table.on('order.dt', function() {
+        var curOrder = table.order();
+        if (curOrder.length >= 1 
+            && curOrder[0][0] == savedOrder[0] 
+            && curOrder[0][1] == savedOrder[1]) {
+            setNeedsSave(false);
+        } else {
+            // different order
+            setNeedsSave(true);
+        }
+    });
+
+    $("#song-table tbody").on( 'click', 'tr', function () {
+        console.log('clicked', $(this));
+        if ( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+            var row = songTable.row( $(this) );
+            stopTrack();
+        } else {
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            var row = songTable.row( $(this) );
+            var rowData = row.data();
+            var track = rowData[rowData.length - 1];
+            console.log('track clicked', track);
+            playTrack(track);
+        }
+    } );
+    return table;
+}
+
+$(document).ready(
+
+    function() {
+        songTable = initTable();
+        var args = parseArgs();
+
+
+        if ('error' in args) {
+            error("Sorry, I can't read your playlists from Spotify without authorization");
+            $("#go").show();
+            $("#go").on('click', function() {
+                authorizeUser();
+            });
+        } else if ('access_token' in args) {
+            accessToken = args['access_token'];
+            $(".worker").hide();
+            fetchCurrentUserProfile(function(user) {
+                if (user) {
+                    curUserID = user.id;
+                    $("#who").text(user.id);
+                    loadPlaylists(user.id);
+                } else {
+                    error("Trouble getting the user profile");
+                }
+            });
+        } else {
+            $("#go").show();
+            $("#go").on('click', function() {
+                authorizeUser();
+            });
+
+        }
+
+        $("#save").on('click', function() {
+            savePlaylist();
+        });
+
+        $("#pick").on('click', function() {
+            showPlaylists();
+        });
+    }
+);
+
+</script>
+
+</body>
+</html>

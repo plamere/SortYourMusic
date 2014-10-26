@@ -1,0 +1,1 @@
+s3cmd sync --acl-public *  s3://static.echonest.com/OhCanada/
