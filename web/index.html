@@ -124,6 +124,11 @@
                                 <li> Manual reordering, addition, and deletion.
                             </ul>
                         If you have any ideas for new feature, let me know.
+                        <li> <b> Is the source available</b> - Yes, you can find
+                        it on <a href="https://github.com/plamere/SortYourMusic">github</a>
+                        <li> <b> This isn't working on Safari</b> - There's an
+                        issue with authentication on the latest version of
+                        Safari. We are looking into it.
                     </ol>
               </div> 
           </div>
@@ -212,8 +217,8 @@ function info(msg) {
 
 function authorizeUser() {
     var client_id = '31469b011d4941bf8dd4ac9cf8495bac';
-    var redirect_uri = 'http://static.echonest.com/SortYourMusic';
     var redirect_uri = 'http://localhost:8000/';
+    var redirect_uri = 'https://static.echonest.com/SortYourMusic';
     var scopes = 'playlist-read-private playlist-modify-private playlist-modify-public';
 
     var url = 'https://accounts.spotify.com/authorize?client_id=' + client_id +
