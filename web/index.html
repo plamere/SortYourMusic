@@ -120,9 +120,14 @@
                         If you have any ideas for new feature, let me know.
                         <li> <b> Is the source available</b> - Yes, you can find
                         it on <a href="https://github.com/plamere/SortYourMusic">github</a>
-                        <li> <b> This isn't working on Safari</b> - There's an
-                        issue with authentication on the latest version of
-                        Safari. We are looking into it.
+                        <li> <b> Does Sort Your Music overwrite my playlist when
+                            I save?</b> - 
+                            No, it creates a copy of the playlist. The new
+                            playlist is called 'Old playlist name sorted by
+                            increasing X', where X is what you sorted the
+                            playlist on. Note that an older version of the app
+                            did overwrite your playlists, but some folks didn't
+                            like that.
                     </ol>
               </div> 
           </div>
@@ -196,6 +201,11 @@ var curUserID = null;
 var curPlaylist = null;
 var audio = $("<audio>");
 var songTable;
+var cols = [
+    'order', 'title', 'artist', 'BPM', 'energy',
+    'danceability', 'loudness', 'duration',
+    'acousticness', 'valence', 'popularity'
+];
 
 // we keep track of which column we last sorted on so we
 // can enable or disable the save button as appropriate
@@ -203,6 +213,11 @@ var savedOrder = [0, 'asc'];
 
 function error(msg) {
     info(msg);
+}
+
+function getCurSortName() {
+    var prefix = (savedOrder[1] == 'asc') ? 'increasing ' : 'decreasing ';
+    return prefix + cols[savedOrder[0]];
 }
 
 function info(msg) {
@@ -485,12 +500,12 @@ function savePlaylist() {
     if (curOrder.length > 0) {
         savedOrder = curOrder[0];
     }
-    saveTidsToPlaylist(curPlaylist, tids, true, function() {
+    createAndSaveTidsToPlaylist(curPlaylist, tids, function() {
         setNeedsSave(false);
     });
 }
 
-function saveTidsToPlaylist(playlist, tids, first, callback) {
+function saveTidsToPlaylistOld(playlist, tids, first, callback) {
     var this_tids = tids.slice(0, 100);
     var remaining = tids.slice(100);
     var url = "https://api.spotify.com/v1/users/" + playlist.owner.id + 
@@ -525,6 +540,41 @@ function saveTidsToPlaylist(playlist, tids, first, callback) {
             }
         });
     }
+}
+
+function saveTidsToPlaylist(playlist, tids, callback) {
+    var this_tids = tids.slice(0, 100);
+    var remaining = tids.slice(100);
+    var json = this_tids;
+    var url = "https://api.spotify.com/v1/users/" + playlist.owner.id + 
+         "/playlists/" + playlist.id + '/tracks';
+
+    callSpotify('POST', url, json, function(ok, data) {
+        if (ok) {
+            if (remaining.length > 0) {
+                saveTidsToPlaylist(playlist, remaining, callback);
+            } else {
+                callback(true);
+            }
+        } else {
+            error("Trouble saving to the playlist"); 
+            callback(false);
+        }
+    });
+}
+
+function createAndSaveTidsToPlaylist(playlist, tids, callback) {
+    var sortName = getCurSortName();
+    var url = "https://api.spotify.com/v1/users/" + playlist.owner.id + "/playlists";
+    var json = { name: curPlaylist.name + " sorted by " + sortName, public: playlist.public };
+    callSpotify('POST', url, json, function(ok, data) {
+        if (ok) {
+            var playlistCopy = data;
+            saveTidsToPlaylist(playlistCopy, tids, callback);
+        } else {
+            error("Can't create the new playlsit");
+        }
+    });
 }
 
 function setNeedsSave(state) {
