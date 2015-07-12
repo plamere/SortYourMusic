@@ -485,12 +485,12 @@ function stopTrack() {
 }
 
 function getSortedUrisFromTable(tracks, table) {
-    var rows = table.rows()[0];
-    var tids = [];
-    _.each(rows, function(row, i) {
-        tids.push(tracks[row].track.uri);
-    });
-    return tids;
+    // Possibly a defect in DataTables: rows() and rows().indexes() returns array in incorrect order
+    // Instead, use rows().data() and calculate index from first column.
+    return _.chain(table.rows().data())
+        .map (function(rowdata) { return rowdata[0] - 1; })
+        .map (function(index) { return tracks[index].track.uri; })
+        .value();
 }
 
 
