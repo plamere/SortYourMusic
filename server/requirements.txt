@@ -1,0 +1,5 @@
+cherrypy
+pyen
+requests
+simplejson
+spotipy
