@@ -148,12 +148,33 @@
                 <h2> <a id='playlist-title'></a></h2>
                 <img class='spinner2' width='100px' src='images/ajaxSpinner.gif'>
                 <div id='single-playlist-contents'>
-                    <div>
-                        <a class="btn btn-primary btn-sm pull-right" 
-                            id='save' role="button">Save Playlist</a>
-                        <a class="btn btn-primary btn-sm pull-left" id='pick'
-                            role="button">back</a>
+
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <a class="btn btn-primary btn-sm pull-right" 
+                                id='save' role="button">Save Playlist</a>
+                            <a class="btn btn-primary btn-sm pull-left" id='pick'
+                                role="button">back</a>
+                        </div>
                     </div>
+
+                    <div class="panel panel-default">
+                        <!-- <div class="panel-heading">Filter</div> -->
+                        <div class="panel-body">
+                            <form class="form-inline" action="">
+                                <div class="form-group">
+                                    <label for="min-bpm">Minimum BPM</label>
+                                    <input id="min-bpm" type="number" class="form-control" placeholder="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="max-bpm">Maximum BPM</label>
+                                    <input id="max-bpm" type="number" class="form-control" placeholder="1000">
+                                </div>
+                                <button id="filter-button" class="btn btn-default btn-sm">Filter</button>
+                            </form>
+                        <div>
+                    </div>
+
                     <table id='song-table' class="hover table table-condensed table-bordered table-striped">  
                         <thead>
                             <th> # </th>
@@ -474,6 +495,17 @@ function loadPlaylists(uid) {
     fetchPlaylists(uid, playlistLoaded);
 }
 
+function playlistFilter( settings, data, dataIndex ) {
+    var minBpm = parseInt( $('#min-bpm').val(), 10 );
+    var maxBpm = parseInt( $('#max-bpm').val(), 10 );
+    var bpm = parseFloat( data[3] ) || 0;
+
+    return ( ( isNaN( minBpm ) && isNaN( maxBpm ) ) ||
+         ( isNaN( minBpm ) && bpm <= maxBpm ) ||
+         ( minBpm <= bpm   && isNaN( maxBpm ) ) ||
+         ( minBpm <= bpm   && bpm <= maxBpm ) );
+}
+
 function playTrack(track) {
     audio.attr('src', track.preview_url);
     audio.get(0).play();
@@ -485,11 +517,9 @@ function stopTrack() {
 
 function getSortedUrisFromTable(tracks, table) {
     // Possibly a defect in DataTables: rows() and rows().indexes() returns array in incorrect order
-    // Instead, use rows().data() and calculate index from first column.
-    return _.chain(table.rows().data())
-        .map (function(rowdata) { return rowdata[0] - 1; })
-        .map (function(index) { return tracks[index].track.uri; })
-        .value();
+    // Instead, use rows().data() and calculate index from track column.
+    return _.map(table.rows({filter:'applied'}).data(),
+        function(rowdata) {return rowdata[11].uri;});
 }
 
 
@@ -571,7 +601,7 @@ function createAndSaveTidsToPlaylist(playlist, tids, callback) {
             var playlistCopy = data;
             saveTidsToPlaylist(playlistCopy, tids, callback);
         } else {
-            error("Can't create the new playlsit");
+            error("Can't create the new playlist");
         }
     });
 }
@@ -591,9 +621,10 @@ function setNeedsSave(state) {
 function initTable() {
     var table = $("#song-table").DataTable( {
             paging: false,
-            searching: false,
+            searching: true,  // searching must be enabled for filtering to work
             // scrollY:'300px',
             info:false,
+            dom:"t", // only show table (exclude search bar)
             columnDefs: [
                 { type : "time-uni", targets:7},
             ]
@@ -667,6 +698,11 @@ $(document).ready(
 
         $("#pick").on('click', function() {
             showPlaylists();
+        });
+
+        $.fn.dataTable.ext.search.push(playlistFilter);
+        $('#min-bpm, #max-bpm').keyup( function() {
+            songTable.draw();
         });
     }
 );
