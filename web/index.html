@@ -141,13 +141,13 @@
 
           <div class="worker" id='playlists'> 
                 <h2 class="prompt" > Pick a playlist: </h2>
-                <img class='spinner' width='100px' src='images/ajaxSpinner.gif'>
+                <img class='spinner' width='100' alt='spinner' src='images/ajaxSpinner.gif'>
                 <div id='playlist-list'> </div>
           </div>
 
           <div class="worker" id='single-playlist'> 
-                <h2> <a id='playlist-title'></a></h2>
-                <img class='spinner2' width='100px' src='images/ajaxSpinner.gif'>
+                <h2> <a id='playlist-title'></a> </h2>
+                <img class='spinner2' width='100' alt='spinner' src='images/ajaxSpinner.gif'>
                 <div id='single-playlist-contents'>
 
                     <div class="panel panel-default">
@@ -162,7 +162,7 @@
                     <div class="panel panel-default">
                         <!-- <div class="panel-heading">Filter</div> -->
                         <div class="panel-body">
-                            <form class="form-inline" action="">
+                            <div class="form-inline">
                                 <div class="form-group">
                                     <label for="min-bpm">Minimum BPM</label>
                                     <input id="min-bpm" type="number" class="form-control" placeholder="0">
@@ -172,23 +172,25 @@
                                     <input id="max-bpm" type="number" class="form-control" placeholder="1000">
                                 </div>
                                 <!-- <button id="filter-button" class="btn btn-default btn-sm">Filter</button> -->
-                            </form>
+                            </div>
                         </div>
                     </div>
 
                     <table id='song-table' class="hover table table-condensed table-bordered table-striped">  
                         <thead>
-                            <th> # </th>
-                            <th> Title </th>
-                            <th> Artist </th>
-                            <th> BPM </th>
-                            <th> Energy </th>
-                            <th> Dance </th>
-                            <th> Loud </th>
-                            <th> Length </th>
-                            <th> Acoustic </th>
-                            <th> Valence </th>
-                            <th> Pop. </th>
+                            <tr>
+                                <th> # </th>
+                                <th> Title </th>
+                                <th> Artist </th>
+                                <th> BPM </th>
+                                <th> Energy </th>
+                                <th> Dance </th>
+                                <th> Loud </th>
+                                <th> Length </th>
+                                <th> Acoustic </th>
+                                <th> Valence </th>
+                                <th> Pop. </th>
+                            </tr>
                         </thead>
                         <tbody> </tbody>
                         <tfoot> </tfoot>
@@ -196,6 +198,7 @@
                 </div>
           </div>
         </div>
+    </div>
 
     <div id="footer">
       <div class="container text-center">
@@ -208,12 +211,12 @@
       </div>
     </div>
     <script src="lib/jquery-1.11.1.min.js"></script>
-    <script type="text/javascript" charset="utf8"
+    <script type="text/javascript" charset="utf-8"
         src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" charset="utf8"
+    <script type="text/javascript" charset="utf-8"
         src="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
     <!-- Deprecated: Replacement is the datetime plug-in (http://datatables.net/blog/2014-12-18) -->
-    <script type="text/javascript" charset="utf8"
+    <script type="text/javascript" charset="utf-8"
         src="//cdn.datatables.net/plug-ins/1.10.7/sorting/time.js"></script>
     <script src="lib/bootstrap.min.js"></script>
     <script src="lib/underscore-min.js"></script>
