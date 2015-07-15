@@ -17,7 +17,14 @@ class SongServer(object):
         self.en = pyen.Pyen()
         self.load_cache()
         print 'loaded', len(self.cache), 'items from the cache'
+
         atexit.register(self.save_cache)
+        self.original_term_handler = cherrypy.engine.signal_handler.handlers["SIGTERM"]
+        cherrypy.engine.signal_handler.set_handler("SIGTERM", self.on_term)
+
+    def on_term():
+        self.save_cache()
+        self.original_term_handler()
 
     @cherrypy.expose
     def index(self):

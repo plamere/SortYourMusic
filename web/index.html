@@ -191,11 +191,10 @@
         src="//cdn.datatables.net/plug-ins/380cb78f450/sorting/time.js"></script>
     <script src="lib/bootstrap.min.js"></script>
     <script src="lib/underscore-min.js"></script>
+    <script src="config.js"></script>
 
 <script>
 "use strict";
-var apiHost = 'http://localhost:8235'
-var apiHost = 'http://labs2.echonest.com/SortYourMusic'
 var accessToken = null;
 var curUserID = null;
 var curPlaylist = null;
@@ -225,15 +224,12 @@ function info(msg) {
 }
 
 function authorizeUser() {
-    var client_id = '31469b011d4941bf8dd4ac9cf8495bac';
-    var redirect_uri = 'http://localhost:8000/';
-    var redirect_uri = 'http://static.echonest.com/SortYourMusic/';
     var scopes = 'playlist-read-private playlist-modify-private playlist-modify-public';
 
-    var url = 'https://accounts.spotify.com/authorize?client_id=' + client_id +
+    var url = 'https://accounts.spotify.com/authorize?client_id=' + SPOTIFY_CLIENT_ID +
         '&response_type=token' +
-        '&scope=' + encodeURIComponent(scopes) + 
-        '&redirect_uri=' + encodeURIComponent(redirect_uri);
+        '&scope=' + encodeURIComponent(scopes) +
+        '&redirect_uri=' + encodeURIComponent(SPOTIFY_REDIRECT_URI);
     document.location = url;
 }
 
@@ -349,7 +345,7 @@ function formatDuration(dur) {
 
 function fetchENTrackInfo(ids, callback) {
     var cids = ids.join(',');
-    var url = apiHost + '/songs';
+    var url = API_HOST + '/songs';
     $.getJSON(url, { ids : cids}, callback);
 }
 
