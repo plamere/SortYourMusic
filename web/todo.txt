@@ -43,6 +43,7 @@ Tracks View:
 - defect: filtering doesn't affect saving.
 - defect: can't save if local files in list.
 - defect?: is order of loaded playlist retained when loading slowly from server?
+- DONE: defect: changing bpm filter doesn't affect save button.
 - BPM doubler for filter (80bpm can count for 160)
 - disable sorting until fully loaded.
 - filter BPM with base tempo +- chosen range (eg, I want 160bpm within 3%)
@@ -57,7 +58,7 @@ Client Architectural:
 - use CDN for everything or migrate CDN libraries to local.
 - local storage for caching of track and owner info.
 - show loaded tracks immediately (without song info), then fill in details as loaded.
-- use promises instead of callbacks (what about progress reporting)
+- WIP: use promises instead of callbacks (what about progress reporting)
 - migrate to ember or angular or react?
 - use templating?
 
