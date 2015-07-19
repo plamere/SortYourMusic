@@ -39,6 +39,8 @@ Playlists View:
 - folder view (requires api)
 
 Tracks View:
+- defect: shows 100-147 in some compilations (instead of 1 - 147)
+- defect: filtering doesn't affect saving.
 - defect: can't save if local files in list.
 - defect?: is order of loaded playlist retained when loading slowly from server?
 - BPM doubler for filter (80bpm can count for 160)
@@ -61,10 +63,11 @@ Client Architectural:
 
 Server Architectural:
 - defect?: does warm.py affect the cache?
-- is sharing the cache object thread safe?
-- sqlite/other db support using sqlalchemy (better concurrency)
-- save cache periodically 
-- use flask intead of cherrpy? (bigger community, how does it affect )
+- DONE: is sharing the cache object thread safe?
+- WONTFIX: sqlite/other db support using sqlalchemy (better concurrency)
+- DONE: use leveldb
+- DONE: save cache periodically 
+- DONE: use flask intead of cherrpy? (bigger community, how does it affect )
 
 Deployment:
 - Documentation for submitting code
