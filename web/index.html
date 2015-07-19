@@ -232,6 +232,8 @@
         src="//cdn.datatables.net/plug-ins/1.10.7/sorting/time.js"></script>
     <script src="lib/bootstrap.min.js"></script>
     <script src="lib/underscore-min.js"></script>
+    <script type="text/javascript" charset="utf-8"
+        src="//cdnjs.cloudflare.com/ajax/libs/q.js/1.4.1/q.min.js"></script>
     <script src="config.js"></script>
 
 <script>
@@ -247,17 +249,20 @@ var cols = [
     'acousticness', 'valence', 'popularity'
 ];
 
-// we keep track of which column we last sorted on so we
-// can enable or disable the save button as appropriate
-var savedOrder = [0, 'asc'];
+// disable save while loading and saving, no matter what the saved state
+var forceDisableSave = false;
+
+// state of the saved playlist, so save button is only shown when different
+var savedState = {};
 
 function error(msg) {
     info(msg);
 }
 
 function getCurSortName() {
-    var prefix = (savedOrder[1] == 'asc') ? 'increasing ' : 'decreasing ';
-    return prefix + cols[savedOrder[0]];
+    var currentState = getPlaylistState();
+    var prefix = (currentState.order[1] == 'asc') ? 'increasing ' : 'decreasing ';
+    return prefix + cols[currentState.order[0]];
 }
 
 function info(msg) {
@@ -312,6 +317,33 @@ function callSpotify(type, url, json, callback) {
     });
 }
 
+function callSpotifyQ(type, url, json) {
+    return Q.Promise(function(resolve, reject, notify) {
+        $.ajax(url, {
+            type: type,
+            data: JSON.stringify(json),
+            dataType: 'json',
+            headers: {
+                'Authorization': 'Bearer ' + accessToken,
+                'Content-Type': 'application/json'
+            },
+            success: function(r) {
+                resolve(r);
+            },
+            error: function(r) {
+                // 2XX status codes are good, but some have no
+                // response data which triggers the error handler
+                // convert it to goodness.
+                if (r.status >= 200 && r.status < 300) {
+                    resolve(r);
+                } else {
+                    reject(r);
+                }
+            }
+        });  
+    });
+}
+
 function getSpotify(url, data, callback) {
     $.ajax(url, {
         dataType: 'json',
@@ -328,6 +360,28 @@ function getSpotify(url, data, callback) {
     });
 }
 
+function getSpotifyQ(type, url, json) {
+    return Q.Promise(function(resolve, reject, notify) {
+        $.ajax(url, {
+            dataType: 'json',
+            data: data,
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            },
+            success: function(r) {
+                resolve(r);
+            },
+            error: function(r) {
+                if (r.status >= 200 && r.status < 300) {
+                    resolve(r);
+                } else {
+                    reject(r);
+                }
+            }
+        });
+    });
+}
+
 function showPlaylists() {
     $(".worker").hide();
     $("#playlists").show();
@@ -340,10 +394,9 @@ function fetchSinglePlaylist(playlist) {
     $(".spinner2").show();
     $("#song-table tbody").empty();
     window.scrollTo(0,0);
+    disableSaveButton();
     songTable.clear();
-    songTable.order([0, 'asc']);
-    setNeedsSave(false);
-
+    resetState();
 
     curPlaylist = playlist;
     curPlaylist.tracks.items = [];
@@ -453,6 +506,8 @@ function fetchPlaylistTracks(data) {
     if (tracks.next) {
         getSpotify(tracks.next, null, fetchPlaylistTracks);
     } else {
+        saveState();
+        enableSaveButtonWhenNeeded();
     }
 }
 
@@ -552,6 +607,11 @@ function stopTrack() {
     audio.get(0).pause();
 }
 
+
+// ----------------------------------------------------------------------------
+// Playlist Saving
+// ----------------------------------------------------------------------------
+
 function getSortedUrisFromTable(tracks, table) {
     // Possibly a defect in DataTables: rows() and rows().indexes() returns array in incorrect order
     // Instead, use rows().data() and calculate index from track column.
@@ -559,88 +619,95 @@ function getSortedUrisFromTable(tracks, table) {
         function(rowdata) {return rowdata[11].uri;});
 }
 
-
 function savePlaylist() {
     var tids = getSortedUrisFromTable(curPlaylist.tracks.items, songTable);
-    var curOrder = songTable.order();
-    if (curOrder.length > 0) {
-        savedOrder = curOrder[0];
-    }
-    createAndSaveTidsToPlaylist(curPlaylist, tids, function() {
-        setNeedsSave(false);
-    });
+
+    disableSaveButton();
+
+    createAndSaveTidsToPlaylist(curPlaylist, tids)
+    .then(function() {
+        saveState();
+    })
+    .catch(function(msg) {
+        error(msg);
+    })
+    .finally(function() {
+        enableSaveButtonWhenNeeded();
+    })
 }
 
-function saveTidsToPlaylistOld(playlist, tids, first, callback) {
-    var this_tids = tids.slice(0, 100);
-    var remaining = tids.slice(100);
-    var url = "https://api.spotify.com/v1/users/" + playlist.owner.id + 
-         "/playlists/" + playlist.id + '/tracks';
-
-    if (first) {
-        var json = { "uris" : this_tids };
-        callSpotify('PUT', url, json, function(ok, data) {
-            if (ok) {
-                if (remaining.length > 0) {
-                    saveTidsToPlaylist(playlist, remaining, false, callback);
-                } else {
-                    callback(true);
-                }
-            } else {
-                error("Trouble saving to the playlist"); 
-                callback(false);
-            }
-        });
-    } else {
-        var json = this_tids;
-        callSpotify('POST', url, json, function(ok, data) {
-            if (ok) {
-                if (remaining.length > 0) {
-                    saveTidsToPlaylist(playlist, remaining, false, callback);
-                } else {
-                    callback(true);
-                }
-            } else {
-                error("Trouble saving to the playlist"); 
-                callback(false);
-            }
-        });
-    }
-}
-
-function saveTidsToPlaylist(playlist, tids, callback) {
+function saveTidsToPlaylist(playlist, tids) {
     var this_tids = tids.slice(0, 100);
     var remaining = tids.slice(100);
     var json = this_tids;
     var url = "https://api.spotify.com/v1/users/" + playlist.owner.id + 
          "/playlists/" + playlist.id + '/tracks';
 
-    callSpotify('POST', url, json, function(ok, data) {
-        if (ok) {
-            if (remaining.length > 0) {
-                saveTidsToPlaylist(playlist, remaining, callback);
-            } else {
-                callback(true);
-            }
-        } else {
-            error("Trouble saving to the playlist"); 
-            callback(false);
-        }
+    return callSpotifyQ('POST', url, json)
+    .then(function() {
+        if (remaining.length > 0) {
+            return saveTidsToPlaylist(playlist, remaining);
+        } 
+    })
+    .catch(function() {
+        return Q.reject("Trouble saving to the playlist");
     });
 }
 
-function createAndSaveTidsToPlaylist(playlist, tids, callback) {
-    var sortName = getCurSortName();
-    var url = "https://api.spotify.com/v1/users/" + curUserID + "/playlists";
-    var json = { name: curPlaylist.name + " sorted by " + sortName, public: playlist.public };
-    callSpotify('POST', url, json, function(ok, data) {
-        if (ok) {
-            var playlistCopy = data;
-            saveTidsToPlaylist(playlistCopy, tids, callback);
-        } else {
-            error("Can't create the new playlist");
-        }
+function createPlaylist(owner, name, isPublic) {
+    var url = "https://api.spotify.com/v1/users/" + owner.id + "/playlists";
+    var json = { name: name, 'public': isPublic };
+    return callSpotifyQ('POST', url, json)
+    .catch(function() {
+        return Q.reject("Can't create the new playlist");
     });
+}
+
+function createAndSaveTidsToPlaylist(playlist, tids) {
+    var sortName = getCurSortName();
+
+    return createPlaylist(curUserID, curPlaylist.name + " sorted by " + sortName, playlist.public)
+    .then(function(playlistCopy) {
+        return saveTidsToPlaylist(playlistCopy, tids);
+    });
+}
+
+
+// ----------------------------------------------------------------------------
+// Saved playlist state tracking
+// ----------------------------------------------------------------------------
+
+function resetState() {
+    songTable.order([0, 'asc']);
+
+    $('#min-bpm').val(0);
+    $('#max-bpm').val(1000);
+
+    saveState();
+}
+
+// we keep track of which column we last sorted on so we
+// can enable or disable the save button as appropriate
+function getPlaylistState() {
+    var firstOrder = [];
+    var selectedTableOrder = songTable.order();
+    if (selectedTableOrder.length >= 1) {
+        firstOrder = _.clone(selectedTableOrder[0]); // object is reused by datatable!
+    }
+
+    return { 
+        minBpm: parseInt( $('#min-bpm').val(), 10 ),
+        maxBpm: parseInt( $('#max-bpm').val(), 10 ),
+        order: firstOrder,
+    };
+}
+
+function saveState() {
+    savedState = getPlaylistState();
+}
+
+function isSavable() {
+    return !_.isEqual(savedState, getPlaylistState());
 }
 
 function setNeedsSave(state) {
@@ -655,6 +722,21 @@ function setNeedsSave(state) {
     }
 }
 
+function updateSaveButtonState() {
+    setNeedsSave(!forceDisableSave && isSavable());
+}
+
+function disableSaveButton() {
+    forceDisableSave = true;
+    updateSaveButtonState();
+}
+
+function enableSaveButtonWhenNeeded() {
+    forceDisableSave = false;
+    updateSaveButtonState();
+}
+
+
 function initTable() {
     var table = $("#song-table").DataTable( {
             paging: false,
@@ -668,15 +750,7 @@ function initTable() {
      });
 
     table.on('order.dt', function() {
-        var curOrder = table.order();
-        if (curOrder.length >= 1 
-            && curOrder[0][0] == savedOrder[0] 
-            && curOrder[0][1] == savedOrder[1]) {
-            setNeedsSave(false);
-        } else {
-            // different order
-            setNeedsSave(true);
-        }
+        updateSaveButtonState();
     });
 
     $("#song-table tbody").on( 'click', 'tr', function () {
@@ -740,6 +814,7 @@ $(document).ready(
         $.fn.dataTable.ext.search.push(playlistFilter);
         $('#min-bpm, #max-bpm').keyup( function() {
             songTable.draw();
+            updateSaveButtonState();
         });
     }
 );
