@@ -142,7 +142,19 @@
           <div class="worker" id='playlists'> 
                 <h2 class="prompt" > Pick a playlist: </h2>
                 <img class='spinner' width='100' alt='spinner' src='images/ajaxSpinner.gif'>
-                <div id='playlist-list'> </div>
+
+                <div class="panel panel-default">
+                    <table id='playlist-list' class="table">
+                        <thead>
+                            <tr>
+                            <th>Name</th>
+                            <th>Track Count</th>
+                            <th>Owner</th>
+                            </tr>
+                        </thead>
+                        <tbody> </tbody>
+                    </table>
+                </div>
           </div>
 
           <div class="worker" id='single-playlist'> 
@@ -445,7 +457,7 @@ function fetchPlaylistTracks(data) {
 }
 
 function fetchPlaylists(uid, callback) {
-    $("#playlist-list").empty();
+    $("#playlist-list tbody").empty();
     $(".prompt").hide();
     $(".spinner").show();
 
@@ -464,27 +476,47 @@ function fetchCurrentUserProfile(callback) {
 }
 
 function goodPlaylist(playlist) {
-    return playlist.tracks.total > 0 && playlist.owner.id == curUserID;
+    return playlist.tracks.total > 0; // && playlist.owner.id == curUserID;
+}
+
+function formatOwner(owner) {
+    if (owner.id == curUserID) {
+        return "";
+    } else {
+        // opportunity to fetch owner details here
+        return owner.id;
+    }
 }
 
 function playlistLoaded(playlists) {
-    var pl = $("#playlist-list");
+    var pl = $("#playlist-list tbody");
     $(".prompt").show();
     $(".spinner").hide();
     if (playlists) {
         info("");
         _.each(playlists.items, function(playlist) {
             if (goodPlaylist(playlist)) {
-                var div = $("<div>");
-                var li = $("<a>").text(playlist.name 
-                    + " (" + playlist.tracks.total + " tracks)");
-                li.addClass('hoverable');
-                div.append(li);
-                pl.append(div);
+                var tr = $("<tr>");
 
-                li.on('click', function() {
-                    fetchSinglePlaylist(playlist);
-                });
+                var tdName = $("<td>")
+
+                var aName = $("<a>")
+                    .text(playlist.name)
+                    .addClass('hoverable')
+                    .on('click', function() {
+                        fetchSinglePlaylist(playlist);
+                    });
+                tdName.append(aName);
+
+                var tdTrackCount = $("<td>").text(playlist.tracks.total);
+
+                var tdOwner = $("<td>").text(formatOwner(playlist.owner));
+
+                tr.append(tdName);
+                tr.append(tdTrackCount);
+                tr.append(tdOwner);
+
+                pl.append(tr);
             }
         });
         if (playlists.next) {
@@ -599,7 +631,7 @@ function saveTidsToPlaylist(playlist, tids, callback) {
 
 function createAndSaveTidsToPlaylist(playlist, tids, callback) {
     var sortName = getCurSortName();
-    var url = "https://api.spotify.com/v1/users/" + playlist.owner.id + "/playlists";
+    var url = "https://api.spotify.com/v1/users/" + curUserID + "/playlists";
     var json = { name: curPlaylist.name + " sorted by " + sortName, public: playlist.public };
     callSpotify('POST', url, json, function(ok, data) {
         if (ok) {

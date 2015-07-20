@@ -116,5 +116,9 @@ view) */
     cursor: pointer;
 }
 
-
-
+#playlist-list {
+  text-align: left
+}
+#playlist-list th {
+  font-weight: bold
+}
