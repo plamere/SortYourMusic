@@ -327,17 +327,20 @@ function callSpotifyQ(type, url, json) {
                 'Authorization': 'Bearer ' + accessToken,
                 'Content-Type': 'application/json'
             },
-            success: function(r) {
-                resolve(r);
+            beforeSend : function () {
+                console.log(type + ": " + this.url);
             },
-            error: function(r) {
+            success: function(data) {
+                resolve(data);
+            },
+            error: function(jqXHR, textStatus) {
                 // 2XX status codes are good, but some have no
                 // response data which triggers the error handler
                 // convert it to goodness.
-                if (r.status >= 200 && r.status < 300) {
-                    resolve(r);
+                if (jqXHR.status >= 200 && jqXHR.status < 300) {
+                    resolve(undefined);
                 } else {
-                    reject(r);
+                    reject(textStatus);
                 }
             }
         });  
@@ -360,7 +363,7 @@ function getSpotify(url, data, callback) {
     });
 }
 
-function getSpotifyQ(type, url, json) {
+function getSpotifyQ(url, data) {
     return Q.Promise(function(resolve, reject, notify) {
         $.ajax(url, {
             dataType: 'json',
@@ -368,14 +371,17 @@ function getSpotifyQ(type, url, json) {
             headers: {
                 'Authorization': 'Bearer ' + accessToken
             },
-            success: function(r) {
-                resolve(r);
+            beforeSend : function () {
+                console.log("GET: " + this.url);
             },
-            error: function(r) {
-                if (r.status >= 200 && r.status < 300) {
-                    resolve(r);
+            success: function(data) {
+                resolve(data);
+            },
+            error: function(jqXHR, textStatus) {
+                if (jqXHR.status >= 200 && jqXHR.status < 300) {
+                    resolve(undefined);
                 } else {
-                    reject(r);
+                    reject(textStatus);
                 }
             }
         });
