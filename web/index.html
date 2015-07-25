@@ -256,6 +256,7 @@ var forceDisableSave = false;
 var savedState = {};
 
 function error(msg) {
+    console.error(msg);
     info(msg);
 }
 
@@ -410,14 +411,16 @@ function fetchSinglePlaylist(playlist) {
     $("#playlist-title").text(playlist.name);
     $("#playlist-title").attr('href', playlist.uri);
 
-     var url = "https://api.spotify.com/v1/users/" + playlist.owner.id 
-        + "/playlists/" + playlist.id
+    info("");
 
-    var data = {
-        limit:100,
-        offset:0
-    }
-    getSpotify(url, data, fetchPlaylistTracks);
+    fetchPlaylistTracks(playlist)
+    .then(function() {
+        saveState();
+        enableSaveButtonWhenNeeded();
+    })
+    .catch(function(msg) {
+        error("Error while loading playlist: " + msg);
+    });
 }
 
 function findDuplicates(playlist) {
@@ -443,15 +446,23 @@ function formatDuration(dur) {
     return mins + ":" + ssecs;
 }
 
-function fetchENTrackInfo(ids, callback) {
+function fetchENTrackInfo(ids) {
     var cids = ids.join(',');
     var url = API_HOST + '/songs';
-    $.getJSON(url, { ids : cids}, callback);
+    return Q.Promise(function(resolve, reject, notify) {
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            data: {ids : cids},
+            beforeSend : function () { console.log("GET: " + this.url); },
+            success: function(data) { resolve(data); },
+            error: function(jqXHR, textStatus) { reject(textStatus); }
+        });
+    });
 }
 
 function updateTable(tracks) {
     $("#single-playlist-contents").show();
-    info("");
     _.each(tracks.items, function(item, i) {
         var track = item.track;
         addTrack(songTable, track);
@@ -494,27 +505,41 @@ function addTrack(table,track) {
     }
 }
 
-function fetchPlaylistTracks(data) {
-    var ids = [];
+function fetchPlaylistTracks(playlist) {
 
-    var tracks = data.tracks ? data.tracks : data;
-    _.each(tracks.items, function(item, i) {
-        item.track.which = curPlaylist.tracks.items.length;
-        curPlaylist.tracks.items.push(item);
-        ids.push(item.track.id);
-    });
-    fetchENTrackInfo(ids, function(enInfo) {
-        _.each(enInfo.songs, function(song, i) {
-            tracks.items[i].track.enInfo = song;
-        });
-        updateTable(tracks);
-    });
-    if (tracks.next) {
-        getSpotify(tracks.next, null, fetchPlaylistTracks);
-    } else {
-        saveState();
-        enableSaveButtonWhenNeeded();
+    function fetchLoop(url) {
+        var tracks;
+
+        return getSpotifyQ(url)
+        .then(function(data) {
+            var ids = [];
+
+            tracks = data.tracks ? data.tracks : data;
+
+            _.each(tracks.items, function(item, i) {
+                item.track.which = curPlaylist.tracks.items.length;
+                curPlaylist.tracks.items.push(item);
+                ids.push(item.track.id);
+            });
+
+            return fetchENTrackInfo(ids)
+        })
+        .then(function(enInfo) {
+            _.each(enInfo.songs, function(song, i) {
+                tracks.items[i].track.enInfo = song;
+            });
+            updateTable(tracks);
+
+            if (tracks.next) {
+                return fetchLoop(tracks.next);
+            }
+        })
+        
     }
+
+    // Spotify API defect? specifying limit will actually return up to 100 items anyway.
+    var startUrl = "https://api.spotify.com/v1/users/" + playlist.owner.id + "/playlists/" + playlist.id;
+    return fetchLoop(startUrl);
 }
 
 function fetchPlaylists(uid, callback) {
