@@ -661,7 +661,7 @@ function saveTidsToPlaylist(playlist, tids) {
 }
 
 function createPlaylist(owner, name, isPublic) {
-    var url = "https://api.spotify.com/v1/users/" + owner.id + "/playlists";
+    var url = "https://api.spotify.com/v1/users/" + curUserID + "/playlists";
     var json = { name: name, 'public': isPublic };
     return callSpotifyQ('POST', url, json)
     .catch(function() {
