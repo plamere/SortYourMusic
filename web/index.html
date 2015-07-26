@@ -646,8 +646,11 @@ function stopTrack() {
 function getSortedUrisFromTable(tracks, table) {
     // Possibly a defect in DataTables: rows() and rows().indexes() returns array in incorrect order
     // Instead, use rows().data() and calculate index from track column.
-    return _.map(table.rows({filter:'applied'}).data(),
-        function(rowdata) {return rowdata[11].uri;});
+    return _.chain(table.rows({filter:'applied'}).data())
+        // Web API only doesn't support local files for now.
+        .select(function(rowdata) { return rowdata[11].uri.startsWith("spotify:track:"); } )
+        .map (function(rowdata) {return rowdata[11].uri;})
+        .value();
 }
 
 function savePlaylist() {
@@ -695,6 +698,10 @@ function createPlaylist(owner, name, isPublic) {
 }
 
 function createAndSaveTidsToPlaylist(playlist, tids) {
+    if (tids.length <= 0) {
+        return Q.reject("Can't save the new playlist because there are no tracks left after filtering.");
+    }
+
     var sortName = getCurSortName();
 
     return createPlaylist(curUserID, curPlaylist.name + " sorted by " + sortName, playlist.public)

@@ -40,8 +40,8 @@ Playlists View:
 
 Tracks View:
 - defect: if press 'back' in middle of loading playlist: when viewing new playlist, continues to load in old one
-- defect: shows 100-147 in some compilations (instead of 1 - 147)
-- defect: can't save if local files in list.
+- defect: shows 100-147 in some compilations (instead of 1 - 147) <-- possibly fixed by new track loader
+- spinning icon while saving.
 - BPM doubler for filter (80bpm can count for 160)
 - filter BPM with base tempo +- chosen range (eg, I want 160bpm within 3%)
 - show loading progress, ie how much is remaining.
@@ -50,6 +50,7 @@ Tracks View:
 - DONE: defect: changing bpm filter doesn't affect save button.
 - DONE: defect?: is order of loaded playlist retained when loading slowly from server?
 - DONE: disable sorting until fully loaded.
+- DONE: defect: can't save if local files in list.
 
 Client Architectural:
 - move js out of index.html into app.js
@@ -64,6 +65,7 @@ Client Architectural:
 
 Server Architectural:
 - defect?: does warm.py affect the cache?
+- defect: db lazy init (get_db) is possibly not thread safe if two requests come in at same time
 - DONE: is sharing the cache object thread safe?
 - WONTFIX: sqlite/other db support using sqlalchemy (better concurrency)
 - DONE: use leveldb
