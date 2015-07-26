@@ -665,34 +665,22 @@ function getSortedUrisFromTable(tracks, table) {
         .value();
 }
 
-// (#save,#dropSave).onclick
-function savePlaylist() {
-    var tids = getSortedUrisFromTable(curPlaylist.tracks.items, songTable);
+// (#save,#dropSave,#dropOverwrite).onclick
+function savePlaylist(playlist, createNewPlaylist) {
+    var tids = getSortedUrisFromTable(playlist.tracks.items, songTable);
+
+    if (tids.length <= 0) {
+        error("Cannot save the playlist because there are no tracks left after filtering");
+        return;
+    }
 
     disableSaveButton();
     showSaveSpinner(true);
 
-    createAndSaveTidsToPlaylist(curPlaylist, tids)
-    .then(function() {
-        saveState();
+    createOrReusePlaylist(playlist, createNewPlaylist)
+    .then(function(playlistToModify) {
+        return saveTidsToPlaylist(playlistToModify, tids, true);
     })
-    .catch(function(msg) {
-        error(msg);
-    })
-    .finally(function() {
-        showSaveSpinner(false);
-        enableSaveButtonWhenNeeded();
-    })
-}
-
-// #dropOverwrite.onclick
-function overwritePlaylist() {
-    var tids = getSortedUrisFromTable(curPlaylist.tracks.items, songTable);
-
-    disableSaveButton();
-    showSaveSpinner(true);
-
-    replaceTidsInPlaylist(curPlaylist, tids)
     .then(function() {
         saveState();
     })
@@ -729,38 +717,26 @@ function saveTidsToPlaylist(playlist, tids, replace) {
         } 
     })
     .catch(function() {
-        return Q.reject("Trouble saving to the playlist");
+        return Q.reject("Trouble saving tracks to the playlist");
     });
 }
 
 function createPlaylist(owner, name, isPublic) {
-    var url = "https://api.spotify.com/v1/users/" + curUserID + "/playlists";
+    var url = "https://api.spotify.com/v1/users/" + owner + "/playlists";
     var json = { name: name, 'public': isPublic };
     return callSpotifyQ('POST', url, json)
     .catch(function() {
-        return Q.reject("Can't create the new playlist");
+        return Q.reject("Cannot create the new playlist");
     });
 }
 
-function createAndSaveTidsToPlaylist(playlist, tids) {
-    if (tids.length <= 0) {
-        return Q.reject("Can't save the new playlist because there are no tracks left after filtering.");
+function createOrReusePlaylist(playlist, createNewPlaylist) {
+    if (createNewPlaylist) {
+        var sortName = getCurSortName();
+        return createPlaylist(curUserID, playlist.name + " sorted by " + sortName, playlist.public);
+    } else {
+        return Q(playlist);
     }
-
-    var sortName = getCurSortName();
-
-    return createPlaylist(curUserID, curPlaylist.name + " sorted by " + sortName, playlist.public)
-    .then(function(playlistCopy) {
-        return saveTidsToPlaylist(playlistCopy, tids, false);
-    });
-}
-
-function replaceTidsInPlaylist(playlist, tids) {
-    if (tids.length <= 0) {
-        return Q.reject("Can't replace tracks in playlist because there are no tracks left after filtering.");
-    }
-
-    return saveTidsToPlaylist(playlist, tids, true);
 }
 
 
@@ -898,14 +874,13 @@ $(document).ready(
             $("#go").on('click', function() {
                 authorizeUser();
             });
-
         }
 
         $("#save,#dropSave").on('click', function() {
-            savePlaylist();
+            savePlaylist(curPlaylist, true);
         });
         $("#dropOverwrite").on('click', function() {
-            overwritePlaylist();
+            savePlaylist(curPlaylist, false);
         });
 
         $("#pick").on('click', function() {
