@@ -122,3 +122,27 @@ view) */
 #playlist-list th {
   font-weight: bold
 }
+
+
+/* Loading spinner based on following stackoverflow answer:
+    http://stackoverflow.com/questions/15982233/spinner-for-twitter-bootstrap-btn 
+    http://jsfiddle.net/oshybystyi/v04ag5ch/4/ */
+    
+.has-spinner .fa-spinner {
+  opacity: 0;
+  max-width: 0;
+
+  -webkit-transition: opacity 0.25s, max-width 0.45s; 
+  -moz-transition: opacity 0.25s, max-width 0.45s;
+  -o-transition: opacity 0.25s, max-width 0.45s;
+  transition: opacity 0.25s, max-width 0.45s; /* Duration fixed since we animate additional hidden width */
+}
+
+.has-spinner.active {
+  cursor:progress;
+}
+
+.has-spinner.active .fa-spinner {
+  opacity: 1;
+  max-width: 50px; /* More than it will ever come, notice that this affects on animation duration */
+}

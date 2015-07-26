@@ -12,6 +12,7 @@
     <link href="dist/sp-bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel="stylesheet" type="text/css"
     href="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="shortcut icon" href="images/favicon.png">
     <title>Sort Your Music</title>
     <!-- Custom styles for this template -->
@@ -166,7 +167,7 @@
                         <div class="panel-body">
 
                             <div class='btn-group pull-right'>
-                              <button id='save' type='button' class='btn btn-primary btn-sm'>Save New Playlist</button>
+                              <button id='save' type='button' class='btn btn-primary btn-sm has-spinner'><i class="fa fa-spinner fa-spin"></i> Save New Playlist</button>
                               <button id='saveDropdown' type='button' class='btn btn-primary btn-sm dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                                 <span class='caret'></span>
                                 <span class='sr-only'>Toggle Dropdown</span>
@@ -669,6 +670,7 @@ function savePlaylist() {
     var tids = getSortedUrisFromTable(curPlaylist.tracks.items, songTable);
 
     disableSaveButton();
+    showSaveSpinner(true);
 
     createAndSaveTidsToPlaylist(curPlaylist, tids)
     .then(function() {
@@ -678,6 +680,7 @@ function savePlaylist() {
         error(msg);
     })
     .finally(function() {
+        showSaveSpinner(false);
         enableSaveButtonWhenNeeded();
     })
 }
@@ -687,6 +690,7 @@ function overwritePlaylist() {
     var tids = getSortedUrisFromTable(curPlaylist.tracks.items, songTable);
 
     disableSaveButton();
+    showSaveSpinner(true);
 
     replaceTidsInPlaylist(curPlaylist, tids)
     .then(function() {
@@ -696,13 +700,15 @@ function overwritePlaylist() {
         error(msg);
     })
     .finally(function() {
+        showSaveSpinner(false);
         enableSaveButtonWhenNeeded();
     })
 }
 
 function saveTidsToPlaylist(playlist, tids, replace) {
-    var this_tids = tids.slice(0, 100);
-    var remaining = tids.slice(100);
+    var sliceLength = 100;
+    var this_tids = tids.slice(0, sliceLength);
+    var remaining = tids.slice(sliceLength);
     var url = "https://api.spotify.com/v1/users/" + playlist.owner.id + 
          "/playlists/" + playlist.id + '/tracks';
     var type;
@@ -821,6 +827,13 @@ function enableSaveButtonWhenNeeded() {
     updateSaveButtonState();
 }
 
+function showSaveSpinner(showSpinner) {
+    if (showSpinner) {
+        $('#save').addClass('active');
+    } else {
+        $('#save').removeClass('active');
+    }
+}
 
 function initTable() {
     var table = $("#song-table").DataTable( {
