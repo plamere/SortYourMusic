@@ -164,8 +164,19 @@
 
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            <a class="btn btn-primary btn-sm pull-right" 
-                                id='save' role="button">Save Playlist</a>
+
+                            <div class='btn-group pull-right'>
+                              <button id='save' type='button' class='btn btn-primary btn-sm'>Save New Playlist</button>
+                              <button type='button' class='btn btn-primary btn-sm dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                                <span class='caret'></span>
+                                <span class='sr-only'>Toggle Dropdown</span>
+                              </button>
+                              <ul class='dropdown-menu'>
+                                <li><a id='dropSave' href='#'>Save New Playlist</a></li>
+                                <li><a id='dropOverwrite' href='#'>Overwrite Playlist</a></li>
+                              </ul>
+                            </div>
+
                             <a class="btn btn-primary btn-sm pull-left" id='pick'
                                 role="button">back</a>
                         </div>
@@ -653,6 +664,7 @@ function getSortedUrisFromTable(tracks, table) {
         .value();
 }
 
+// (#save,#dropSave).onclick
 function savePlaylist() {
     var tids = getSortedUrisFromTable(curPlaylist.tracks.items, songTable);
 
@@ -670,17 +682,44 @@ function savePlaylist() {
     })
 }
 
-function saveTidsToPlaylist(playlist, tids) {
+// #dropOverwrite.onclick
+function overwritePlaylist() {
+    var tids = getSortedUrisFromTable(curPlaylist.tracks.items, songTable);
+
+    disableSaveButton();
+
+    replaceTidsInPlaylist(curPlaylist, tids)
+    .then(function() {
+        saveState();
+    })
+    .catch(function(msg) {
+        error(msg);
+    })
+    .finally(function() {
+        enableSaveButtonWhenNeeded();
+    })
+}
+
+function saveTidsToPlaylist(playlist, tids, replace) {
     var this_tids = tids.slice(0, 100);
     var remaining = tids.slice(100);
-    var json = this_tids;
     var url = "https://api.spotify.com/v1/users/" + playlist.owner.id + 
          "/playlists/" + playlist.id + '/tracks';
+    var type;
+    var json;
 
-    return callSpotifyQ('POST', url, json)
+    if (replace) {
+        type = 'PUT';
+        json = { 'uris': this_tids };
+    } else {
+        type = 'POST';
+        json = this_tids;
+    }
+
+    return callSpotifyQ(type, url, json)
     .then(function() {
         if (remaining.length > 0) {
-            return saveTidsToPlaylist(playlist, remaining);
+            return saveTidsToPlaylist(playlist, remaining, false);
         } 
     })
     .catch(function() {
@@ -706,8 +745,16 @@ function createAndSaveTidsToPlaylist(playlist, tids) {
 
     return createPlaylist(curUserID, curPlaylist.name + " sorted by " + sortName, playlist.public)
     .then(function(playlistCopy) {
-        return saveTidsToPlaylist(playlistCopy, tids);
+        return saveTidsToPlaylist(playlistCopy, tids, false);
     });
+}
+
+function replaceTidsInPlaylist(playlist, tids) {
+    if (tids.length <= 0) {
+        return Q.reject("Can't replace tracks in playlist because there are no tracks left after filtering.");
+    }
+
+    return saveTidsToPlaylist(playlist, tids, true);
 }
 
 
@@ -841,8 +888,11 @@ $(document).ready(
 
         }
 
-        $("#save").on('click', function() {
+        $("#save,#dropSave").on('click', function() {
             savePlaylist();
+        });
+        $("#dropOverwrite").on('click', function() {
+            overwritePlaylist();
         });
 
         $("#pick").on('click', function() {
