@@ -195,6 +195,10 @@
                                     <label for="max-bpm">Maximum BPM</label>
                                     <input id="max-bpm" type="number" class="form-control" placeholder="1000">
                                 </div>
+                                <div class="form-group">
+                                    <label for="include-double">Include Doubled BPM</label>
+                                    <input id="include-double" type="checkbox" checked="checked">
+                                </div>
                                 <!-- <button id="filter-button" class="btn btn-default btn-sm">Filter</button> -->
                             </div>
                         </div>
@@ -630,15 +634,21 @@ function loadPlaylists(uid) {
     fetchPlaylists(uid, playlistLoaded);
 }
 
+function inRange(val, min, max) {
+    return ( ( isNaN(min) && isNaN(max) ) ||
+             ( isNaN(min) && val <= max ) ||
+             ( min <= val && isNaN(max) ) ||
+             ( min <= val && val <= max ) );
+}
+
 function playlistFilter( settings, data, dataIndex ) {
     var minBpm = parseInt( $('#min-bpm').val(), 10 );
     var maxBpm = parseInt( $('#max-bpm').val(), 10 );
+    var includeDouble = $('#include-double').is(':checked');
     var bpm = parseFloat( data[3] ) || 0;
 
-    return ( ( isNaN( minBpm ) && isNaN( maxBpm ) ) ||
-         ( isNaN( minBpm ) && bpm <= maxBpm ) ||
-         ( minBpm <= bpm   && isNaN( maxBpm ) ) ||
-         ( minBpm <= bpm   && bpm <= maxBpm ) );
+    return inRange(bpm, minBpm, maxBpm) || 
+        (includeDouble && inRange(bpm*2, minBpm, maxBpm));
 }
 
 function playTrack(track) {
@@ -749,6 +759,7 @@ function resetState() {
 
     $('#min-bpm').val("");
     $('#max-bpm').val("");
+    $('#include-double').prop('checked', true);
 
     saveState();
 }
@@ -765,6 +776,7 @@ function getPlaylistState() {
     return { 
         minBpm: parseInt( $('#min-bpm').val(), 10 ),
         maxBpm: parseInt( $('#max-bpm').val(), 10 ),
+        includeDouble: $('#include-double').is(':checked'),
         order: firstOrder,
     };
 }
@@ -888,7 +900,7 @@ $(document).ready(
         });
 
         $.fn.dataTable.ext.search.push(playlistFilter);
-        $('#min-bpm, #max-bpm').keyup( function() {
+        $('#min-bpm,#max-bpm,#include-double').on('keyup change', function() {
             songTable.draw();
             updateSaveButtonState();
         });
