@@ -167,7 +167,7 @@
 
                             <div class='btn-group pull-right'>
                               <button id='save' type='button' class='btn btn-primary btn-sm'>Save New Playlist</button>
-                              <button type='button' class='btn btn-primary btn-sm dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                              <button id='saveDropdown' type='button' class='btn btn-primary btn-sm dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                                 <span class='caret'></span>
                                 <span class='sr-only'>Toggle Dropdown</span>
                               </button>
@@ -797,13 +797,13 @@ function isSavable() {
 
 function setNeedsSave(state) {
     if (state) {
-        $("#save").attr('disabled', false);
-        $("#save").removeClass('btn-warning');
-        $("#save").addClass('btn-primary');
+        $("#save,#saveDropdown").attr('disabled', false);
+        $("#save,#saveDropdown").removeClass('btn-warning');
+        $("#save,#saveDropdown").addClass('btn-primary');
     } else {
-        $("#save").attr('disabled', true);
-        $("#save").addClass('btn-warning');
-        $("#save").removeClass('btn-primary');
+        $("#save,#saveDropdown").attr('disabled', true);
+        $("#save,#saveDropdown").addClass('btn-warning');
+        $("#save,#saveDropdown").removeClass('btn-primary');
     }
 }
 
