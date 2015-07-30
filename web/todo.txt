@@ -64,13 +64,15 @@ Client Architectural:
 - DONE: only make one request at a time to cut down load on api server.
 
 Server Architectural:
-- defect?: does warm.py affect the cache?
 - defect: db lazy init (get_db) is possibly not thread safe if two requests come in at same time
+- optional redis backend for multi-process?
+- warm.py: specify url on command line.
 - DONE: is sharing the cache object thread safe?
 - WONTFIX: sqlite/other db support using sqlalchemy (better concurrency)
 - DONE: use leveldb
 - DONE: save cache periodically 
 - DONE: use flask intead of cherrpy? (bigger community, how does it affect )
+- NOTDEFCT: defect?: does warm.py affect the cache?
 
 Deployment:
 - Documentation for submitting code

@@ -33,12 +33,12 @@ or copy projenv.example, modify it, then source it:
 
 Edit web/config.js to point to localhost and update Spotify client id.
 
-Optionally warm up server cache with top 1000 artists (this may take some time):
-
-    $ $(cd server ; python warm.py)
-
 Run server
 
     $ $(cd server ; python server2.py)
+
+Optionally warm up server cache with top 1000 artists (this may take some time):
+
+    $ $(cd server ; python warm.py)
 
 Connect to [http://localhost:8235/SortYourMusic/](http://static.echonest.com/SortYourMusic)

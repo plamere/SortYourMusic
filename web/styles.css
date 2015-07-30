@@ -123,11 +123,14 @@ view) */
   font-weight: bold
 }
 
+#min-bpm,#max-bpm {
+  width:100px;
+}
 
 /* Loading spinner based on following stackoverflow answer:
     http://stackoverflow.com/questions/15982233/spinner-for-twitter-bootstrap-btn 
     http://jsfiddle.net/oshybystyi/v04ag5ch/4/ */
-    
+
 .has-spinner .fa-spinner {
   opacity: 0;
   max-width: 0;
