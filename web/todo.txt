@@ -35,39 +35,44 @@ Playlists View:
 - filter owned/followed lists
 - loading progress (how much is remaining?)
 - sorting by name, last modified, owner, etc
-- select multiple playlists to filter
+- select multiple playlists to filter (disable overwrite if multiple)
 - folder view (requires api)
 
 Tracks View:
-- defect: shows 100-147 in some compilations (instead of 1 - 147)
-- defect: filtering doesn't affect saving.
-- defect: can't save if local files in list.
-- defect?: is order of loaded playlist retained when loading slowly from server?
-- BPM doubler for filter (80bpm can count for 160)
-- disable sorting until fully loaded.
+- defect: if press 'back' in middle of loading playlist: when viewing new playlist, continues to load in old one
+- defect: shows 100-147 in some compilations (instead of 1 - 147) <-- possibly fixed by new track loader
 - filter BPM with base tempo +- chosen range (eg, I want 160bpm within 3%)
 - show loading progress, ie how much is remaining.
-- save/add to/replace playlist (like button in spotify)
 - map bpm to custom graph over time (eg, a playlist that slowly ramps up then down again quickly)
+- DONE: defect: changing bpm filter doesn't affect save button.
+- DONE: defect?: is order of loaded playlist retained when loading slowly from server?
+- DONE: disable sorting until fully loaded.
+- DONE: defect: can't save if local files in list.
+- DONE: save/add to/replace playlist (like button in spotify)
+- DONE: spinning icon while saving.
+- DONE: BPM doubler for filter (80bpm can count for 160)
 
 Client Architectural:
+- WIP: use promises instead of callbacks (what about progress reporting)
 - move js out of index.html into app.js
-- only make one request at a time to cut down load on api server.
 - upgrade other libraries. 
 - use CDN for everything or migrate CDN libraries to local.
 - local storage for caching of track and owner info.
 - show loaded tracks immediately (without song info), then fill in details as loaded.
-- use promises instead of callbacks (what about progress reporting)
-- migrate to ember or angular or react?
+- Investigate migrating to AngularJS
 - use templating?
+- DONE: only make one request at a time to cut down load on api server.
 
 Server Architectural:
-- defect?: does warm.py affect the cache?
+- defect: db lazy init (get_db) is possibly not thread safe if two requests come in at same time
+- optional redis backend for multi-process?
+- warm.py: specify url on command line.
 - DONE: is sharing the cache object thread safe?
 - WONTFIX: sqlite/other db support using sqlalchemy (better concurrency)
 - DONE: use leveldb
 - DONE: save cache periodically 
 - DONE: use flask intead of cherrpy? (bigger community, how does it affect )
+- NOTDEFCT: defect?: does warm.py affect the cache?
 
 Deployment:
 - Documentation for submitting code
