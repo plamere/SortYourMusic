@@ -90,8 +90,6 @@
                         <li> <b> Length </b> - The duration of the song.
                         <li> <b> Acoustic </b> - The higher the value the more
                         acoustic the song is.
-                        <li> <b> Valence </b> - The higher the value the more positive
-                        the song is.
                         <li> <b> Popularity </b> - The higher the value the more
                         popular the song is.
                     </ol>
@@ -386,7 +384,7 @@ function getSpotifyQ(url, data) {
                 'Authorization': 'Bearer ' + accessToken
             },
             beforeSend : function () {
-                console.log("GET: " + this.url);
+                // console.log("GET: " + this.url);
             },
             success: function(data) {
                 resolve(data);
