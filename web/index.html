@@ -103,9 +103,8 @@
                     </p>
                     <ol>
                         <li> <b> How was this built? </b> This was created using
-                        the <a href="http://developer.echonest.com">Echo
-                        Nest</a> and the <a
-                        href="http://developer.spotify.com">Spotify</a> APIs.
+                        the <a
+                        href="http://developer.spotify.com">Spotify</a> API.
 
                         <li> <b> Where can I learn more about the Echo Nest song
                         attributes?</b> See <a
@@ -216,7 +215,6 @@
                                 <th> Loud </th>
                                 <th> Length </th>
                                 <th> Acoustic </th>
-                                <th> Valence </th>
                                 <th> Pop. </th>
                             </tr>
                         </thead>
@@ -231,8 +229,7 @@
     <div id="footer">
       <div class="container text-center">
             <p class="text-muted">
-                Powered by <a href="http://spotify.com">Spotify</a>,
-                and <a href="http://the.echonest.com">The Echo Nest</a>,
+                Powered by <a href="http://spotify.com">Spotify</a>
                 Created by <a href="http://twitter.com/plamere">@plamere</a>
                 with contributions by <a href="http://twitter.com/sonneveld">@sonneveld</a>.
             </p>
@@ -262,7 +259,7 @@ var songTable;
 var cols = [
     'order', 'title', 'artist', 'BPM', 'energy',
     'danceability', 'loudness', 'duration',
-    'acousticness', 'valence', 'popularity'
+    'acousticness', 'popularity'
 ];
 
 // disable save while loading and saving, no matter what the saved state
@@ -462,19 +459,10 @@ function formatDuration(dur) {
     return mins + ":" + ssecs;
 }
 
-function fetchENTrackInfo(ids) {
+function fetchAudioFeatures(ids) {
     var cids = ids.join(',');
-    var url = API_HOST + '/songs';
-    return Q.Promise(function(resolve, reject, notify) {
-        $.ajax({
-            url: url,
-            dataType: 'json',
-            data: {ids : cids},
-            beforeSend : function () { console.log("GET: " + this.url); },
-            success: function(data) { resolve(data); },
-            error: function(jqXHR, textStatus) { reject(textStatus); }
-        });
-    });
+    var url = "https://api.spotify.com/v1/audio-features";
+    return getSpotifyQ(url, { ids: cids});
 }
 
 function updateTable(tracks) {
@@ -499,8 +487,8 @@ function addTrack(table,track) {
                 Math.round(track.enInfo.loudness),
                 formatDuration(track.enInfo.duration),
                 Math.round(track.enInfo.acousticness * 100),
-                Math.round(track.enInfo.valence * 100),
-                Math.round(track.enInfo.song_hotttnesss * 100),
+                //Math.round(track.enInfo.song_hotttnesss * 100),
+                Math.round(track.popularity),
                 track
         ]);
     } else {
@@ -538,12 +526,15 @@ function fetchPlaylistTracks(playlist) {
                 ids.push(item.track.id);
             });
 
-            return fetchENTrackInfo(ids)
+            return fetchAudioFeatures(ids)
         })
-        .then(function(enInfo) {
-            _.each(enInfo.songs, function(song, i) {
-                tracks.items[i].track.enInfo = song;
+        .then(function(trackFeatures) {
+            console.log('got audioFeatures', trackFeatures);
+            _.each(trackFeatures, function(trackFeature, i) {
+                console.log(trackFeature, i);
+                tracks.items[i].track.enInfo = trackFeature;
             });
+            console.log("updatetable", tracks);
             updateTable(tracks);
 
             if (tracks.next) {
@@ -554,7 +545,8 @@ function fetchPlaylistTracks(playlist) {
     }
 
     // Spotify API defect? specifying limit will actually return up to 100 items anyway.
-    var startUrl = "https://api.spotify.com/v1/users/" + playlist.owner.id + "/playlists/" + playlist.id;
+    var startUrl = "https://api.spotify.com/v1/users/" + playlist.owner.id +
+        "/playlists/" + playlist.id + "/tracks?limit=50";
     return fetchLoop(startUrl);
 }
 
@@ -670,8 +662,8 @@ function getSortedUrisFromTable(tracks, table) {
     // Instead, use rows().data() and calculate index from track column.
     return _.chain(table.rows({filter:'applied'}).data())
         // Web API only doesn't support local files for now.
-        .select(function(rowdata) { return rowdata[11].uri.startsWith("spotify:track:"); } )
-        .map (function(rowdata) {return rowdata[11].uri;})
+        .select(function(rowdata) { return rowdata[10].uri.startsWith("spotify:track:"); } )
+        .map (function(rowdata) {return rowdata[10].uri;})
         .value();
 }
 
