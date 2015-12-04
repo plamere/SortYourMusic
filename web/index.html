@@ -529,12 +529,9 @@ function fetchPlaylistTracks(playlist) {
             return fetchAudioFeatures(ids)
         })
         .then(function(trackFeatures) {
-            console.log('got audioFeatures', trackFeatures);
             _.each(trackFeatures, function(trackFeature, i) {
-                console.log(trackFeature, i);
                 tracks.items[i].track.enInfo = trackFeature;
             });
-            console.log("updatetable", tracks);
             updateTable(tracks);
 
             if (tracks.next) {
