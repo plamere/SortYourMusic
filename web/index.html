@@ -517,18 +517,28 @@ function fetchPlaylistTracks(playlist) {
             var ids = [];
 
             tracks = data.tracks ? data.tracks : data;
-
             _.each(tracks.items, function(item, i) {
                 item.track.which = curPlaylist.tracks.items.length;
                 curPlaylist.tracks.items.push(item);
-                ids.push(item.track.id);
+                if (item.track.id) {
+                    ids.push(item.track.id);
+                }
             });
-
             return fetchAudioFeatures(ids)
         })
         .then(function(trackFeatures) {
+            var fmap = {};
             _.each(trackFeatures, function(trackFeature, i) {
-                tracks.items[i].track.enInfo = trackFeature;
+                fmap[trackFeature.id] = trackFeature;
+            });
+
+            _.each(tracks.items, function(item, i) {
+                var tid = item.track.id;
+                if (tid in fmap) {
+                    item.track.enInfo = fmap[tid];
+                } else {
+                    item.track.enInfo = {};
+                }
             });
             updateTable(tracks);
 
