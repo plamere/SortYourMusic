@@ -483,7 +483,7 @@ function addTrack(table,track) {
                 Math.round(track.enInfo.energy * 100),
                 Math.round(track.enInfo.danceability * 100),
                 Math.round(track.enInfo.loudness),
-                formatDuration(track.enInfo.duration),
+                formatDuration(Math.round(track.enInfo.duration_ms / 1000.0)),
                 Math.round(track.enInfo.acousticness * 100),
                 //Math.round(track.enInfo.song_hotttnesss * 100),
                 Math.round(track.popularity),
