@@ -499,7 +499,7 @@ function addTrack(table,track) {
                 '',
                 '',
                 '',
-                '',
+                // '',
                 '',
                 '',
                 track
@@ -529,7 +529,9 @@ function fetchPlaylistTracks(playlist) {
         .then(function(trackFeatures) {
             var fmap = {};
             _.each(trackFeatures, function(trackFeature, i) {
-                fmap[trackFeature.id] = trackFeature;
+                if (trackFeature) {
+                    fmap[trackFeature.id] = trackFeature;
+                }
             });
 
             _.each(tracks.items, function(item, i) {
