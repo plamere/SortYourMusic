@@ -181,6 +181,10 @@
                     </div>
 
                     <div class="panel panel-default">
+                      <div id="cy"></div>
+                    </div>
+
+                    <div class="panel panel-default">
                         <!-- <div class="panel-heading">Filter</div> -->
                         <div class="panel-body">
                             <div class="form-inline">
@@ -214,6 +218,7 @@
                                 <th> Length </th>
                                 <th> Acoustic </th>
                                 <th> Pop. </th>
+                                <th> Key </th>
                             </tr>
                         </thead>
                         <tbody> </tbody>
@@ -245,6 +250,8 @@
     <script src="lib/underscore-min.js"></script>
     <script type="text/javascript" charset="utf-8"
         src="//cdnjs.cloudflare.com/ajax/libs/q.js/1.4.1/q.min.js"></script>
+    <script type="text/javascript" charset="utf-8"
+        src="//cdnjs.cloudflare.com/ajax/libs/cytoscape/2.6.1/cytoscape.min.js"></script>
     <script src="config.js"></script>
 
 <script>
@@ -257,7 +264,12 @@ var songTable;
 var cols = [
     'order', 'title', 'artist', 'BPM', 'energy',
     'danceability', 'loudness', 'duration',
-    'acousticness', 'popularity'
+    'acousticness', 'popularity', 'key'
+];
+var keyMap = [
+//   C  Db  D  Eb E  F  F#  G  Ab A  Bb  B
+    [5, 12, 7, 2, 9, 4, 11, 6, 1, 8, 3, 10], // minor
+    [8, 3, 10, 5, 12, 7, 2, 9, 4, 11, 6, 1]  // major
 ];
 
 // disable save while loading and saving, no matter what the saved state
@@ -265,6 +277,9 @@ var forceDisableSave = false;
 
 // state of the saved playlist, so save button is only shown when different
 var savedState = {};
+
+// graph
+var cy = null;
 
 function error(msg) {
     console.error(msg);
@@ -414,6 +429,7 @@ function fetchSinglePlaylist(playlist) {
     window.scrollTo(0,0);
     disableSaveButton();
     songTable.clear();
+    cy.remove('node');
     resetState();
 
     curPlaylist = playlist;
@@ -427,6 +443,7 @@ function fetchSinglePlaylist(playlist) {
     fetchPlaylistTracks(playlist)
     .then(function() {
         saveState();
+        updateGraph(curPlaylist.tracks);
         enableSaveButtonWhenNeeded();
     })
     .catch(function(msg) {
@@ -457,9 +474,28 @@ function formatDuration(dur) {
     return mins + ":" + ssecs;
 }
 
+function formatKey(key, mode) {
+    if (!key || !mode) return '';
+    return keyMap[mode][key]+(mode<1?'A':'B');
+}
+
+function trackDist(trackA, trackB) {
+  if (!trackA.enInfo.mode || !trackA.enInfo.key ||
+      !trackB.enInfo.mode || !trackB.enInfo.key) return 0;
+  var keyA = keyMap[trackA.enInfo.mode][trackA.enInfo.key];
+  var keyB = keyMap[trackB.enInfo.mode][trackB.enInfo.key];
+  if (trackA.enInfo.mode == trackB.enInfo.mode) {
+    if (keyA == keyB) return 2;
+    else if (Math.abs(keyA-keyB) < 2) return 1;
+  } else {
+    if (keyA == keyB) return 1;
+  }
+  return 0;
+}
+
 function fetchAudioFeatures(ids) {
     var cids = ids.join(',');
-    var url = "https://api.spotify.com/v1/audio-features";
+    var url = "/SortYourMusic/songs";
     return getSpotifyQ(url, { ids: cids});
 }
 
@@ -471,6 +507,51 @@ function updateTable(tracks) {
     });
     songTable.draw();
     $(".spinner2").hide();
+}
+
+function updateGraph(tracks) {
+
+  // add nodes
+  _.each(tracks.items, function(item, id) {
+    cy.add({
+      group: 'nodes',
+      data: {
+        id: item.track.which + 1,
+        weight: 100
+      },
+      position: {
+        x: 100,
+        y: 100
+      }
+    });
+  });
+
+  // add edges
+  _.each(tracks.items, function(source, sid) {
+    _.each(tracks.items, function(target, tid) {
+      if (source.track.which > target.track.which) {
+        var distance = trackDist(source.track, target.track);
+        if (distance > 0) {
+          cy.add({
+            group: 'edges',
+            data: {
+              id: source.track.which+':'+target.track.which,
+              source: source.track.which+1,
+              target: target.track.which+1,
+              weight: distance
+            }
+          });
+        }
+      }
+    });
+  });
+
+  cy.layout({
+    name: 'circle',
+    animate: true,
+    animationDuration: 1500
+  });
+  cy.resize();
 }
 
 function addTrack(table,track) {
@@ -487,6 +568,7 @@ function addTrack(table,track) {
                 Math.round(track.enInfo.acousticness * 100),
                 //Math.round(track.enInfo.song_hotttnesss * 100),
                 Math.round(track.popularity),
+                formatKey(track.enInfo.key, track.enInfo.mode),
                 track
         ]);
     } else {
@@ -494,6 +576,7 @@ function addTrack(table,track) {
                 track.which + 1, 
                 track.name, 
                 track.artists[0].name,
+                '',
                 '',
                 '',
                 '',
@@ -667,8 +750,8 @@ function getSortedUrisFromTable(tracks, table) {
     // Instead, use rows().data() and calculate index from track column.
     return _.chain(table.rows({filter:'applied'}).data())
         // Web API only doesn't support local files for now.
-        .select(function(rowdata) { return rowdata[10].uri.startsWith("spotify:track:"); } )
-        .map (function(rowdata) {return rowdata[10].uri;})
+        .select(function(rowdata) { return rowdata[11].uri.startsWith("spotify:track:"); } )
+        .map (function(rowdata) {return rowdata[11].uri;})
         .value();
 }
 
@@ -859,6 +942,33 @@ $(document).ready(
         songTable = initTable();
         var args = parseArgs();
 
+        cy = cytoscape({
+          container: $('#cy'),
+          style: [
+            {
+              selector: 'node',
+              style: {
+                'label': 'data(id)'
+              }
+            },
+            {
+              selector: 'edge',
+              style: {
+                'width': 3,
+                'line-color': 'blue',
+                'label': 'data(weight)'
+              }
+            }
+          ]
+        });
+        cy.on('mousedown mouseup', 'node', function(event) {
+          var node = event.cyTarget;
+          var row = songTable.row(node.id()-1);
+          var rowData = row.data();
+          var track = rowData[rowData.length - 1];
+          if (event.type == 'mousedown') playTrack(track);
+          else stopTrack(track);
+        });
 
         if ('error' in args) {
             error("Sorry, I can't read your playlists from Spotify without authorization");

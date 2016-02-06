@@ -149,3 +149,10 @@ view) */
   opacity: 1;
   max-width: 50px; /* More than it will ever come, notice that this affects on animation duration */
 }
+
+#cy {
+  width: 100%;
+  height: 300px;
+  display: block;
+  text-align: initial;
+}

@@ -4,6 +4,7 @@ import time
 import flask
 import plyvel
 import pyen
+import json
 from flask.ext.cors import CORS
 from flask import Flask, jsonify, Blueprint, request
 
@@ -47,6 +48,7 @@ def get_song_info(tid):
         song = response['songs'][0]
         rsong = {
             'tid' : tid,
+            'id' : tid.split(':')[2],
             'timestamp' : time.time(),
             'title' : song['title'],
             'artist' : song['artist_name'],
@@ -61,9 +63,11 @@ def get_song_info(tid):
             'mode': song['audio_summary']['mode'],
             'time_signature': song['audio_summary']['time_signature'],
             'duration': song['audio_summary']['duration'],
+            'duration_ms': song['audio_summary']['duration']*1000,
             'valence': song['audio_summary']['valence'],
             'danceability': song['audio_summary']['danceability'],
             'loudness': song['audio_summary']['loudness'],
+            'key' : song['audio_summary']['key']
         }
     except pyen.PyenException, e:
         rsong = {
@@ -173,10 +177,7 @@ def songs():
     tids_s = request.args.get('ids')
     tids = tids_s.split(',') if tids_s else []
     songs, processing_time = get_multi_song_info(tids)
-    return jsonify({
-        'songs' : songs,
-        'time': processing_time
-    })
+    return json.dumps(songs)
 
 app.register_blueprint(sort_your_music, url_prefix=DEFAULT_PREFIX)
 
