@@ -67,6 +67,7 @@ def get_song_info(tid):
             'valence': song['audio_summary']['valence'],
             'danceability': song['audio_summary']['danceability'],
             'loudness': song['audio_summary']['loudness'],
+            'key' : song['audio_summary']['key']
         }
     except pyen.PyenException, e:
         rsong = {
