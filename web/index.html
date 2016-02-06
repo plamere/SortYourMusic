@@ -459,7 +459,7 @@ function formatDuration(dur) {
 
 function fetchAudioFeatures(ids) {
     var cids = ids.join(',');
-    var url = "https://api.spotify.com/v1/audio-features";
+    var url = "/SortYourMusic/songs";
     return getSpotifyQ(url, { ids: cids});
 }
 
