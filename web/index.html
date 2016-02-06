@@ -475,10 +475,13 @@ function formatDuration(dur) {
 }
 
 function formatKey(key, mode) {
+    if (!key || !mode) return '';
     return keyMap[mode][key]+(mode<1?'A':'B');
 }
 
 function trackDist(trackA, trackB) {
+  if (!trackA.enInfo.mode || !trackA.enInfo.key ||
+      !trackB.enInfo.mode || !trackB.enInfo.key) return 0;
   var keyA = keyMap[trackA.enInfo.mode][trackA.enInfo.key];
   var keyB = keyMap[trackB.enInfo.mode][trackB.enInfo.key];
   if (trackA.enInfo.mode == trackB.enInfo.mode) {
@@ -542,7 +545,12 @@ function updateGraph(tracks) {
       }
     });
   });
-  cy.layout({name: 'circle'});
+
+  cy.layout({
+    name: 'circle',
+    animate: true,
+    animationDuration: 1500
+  });
   cy.resize();
 }
 
@@ -952,6 +960,14 @@ $(document).ready(
               }
             }
           ]
+        });
+        cy.on('mousedown mouseup', 'node', function(event) {
+          var node = event.cyTarget;
+          var row = songTable.row(node.id()-1);
+          var rowData = row.data();
+          var track = rowData[rowData.length - 1];
+          if (event.type == 'mousedown') playTrack(track);
+          else stopTrack(track);
         });
 
         if ('error' in args) {
