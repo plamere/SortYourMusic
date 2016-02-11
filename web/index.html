@@ -46,7 +46,7 @@
             <p id='ttext'>
                 Sort your Spotify playlists by any of 
                 a wide range of musical attributes such as tempo, loudness, 
-                energy, danceability, popularity and more. Now with
+                valence, energy, danceability, popularity and more. Now with
                 <b>Filters</b>!
             </p>
             <p>  Login with your Spotify account to get started</p>
@@ -87,6 +87,8 @@
                         easier it is to dance to this song.
                         <li> <b> Loudness </b> - The higher the value, the
                         louder the song.
+                        <li> <b> Valence </b> - The higher the value, the
+                        more positive mood for the song.
                         <li> <b> Length </b> - The duration of the song.
                         <li> <b> Acoustic </b> - The higher the value the more
                         acoustic the song is.
@@ -211,6 +213,7 @@
                                 <th> Energy </th>
                                 <th> Dance </th>
                                 <th> Loud </th>
+                                <th> Valence </th>
                                 <th> Length </th>
                                 <th> Acoustic </th>
                                 <th> Pop. </th>
@@ -256,7 +259,7 @@ var audio = $("<audio>");
 var songTable;
 var cols = [
     'order', 'title', 'artist', 'BPM', 'energy',
-    'danceability', 'loudness', 'duration',
+    'danceability', 'loudness', 'valence', 'duration',
     'acousticness', 'popularity'
 ];
 
@@ -267,7 +270,6 @@ var forceDisableSave = false;
 var savedState = {};
 
 function error(msg) {
-    console.error(msg);
     info(msg);
 }
 
@@ -430,6 +432,7 @@ function fetchSinglePlaylist(playlist) {
         enableSaveButtonWhenNeeded();
     })
     .catch(function(msg) {
+        console.log('msg', msg);
         error("Error while loading playlist: " + msg);
     });
 }
@@ -438,11 +441,13 @@ function findDuplicates(playlist) {
     var ids = {};
     var dups = [];
     _.each(playlist.tracks.items, function(item, i) {
-        var track = item.track.id;
-        if (id in ids) {
-            dups.push(id);
+        if (item.track && item.track.id) {
+            var track = item.track.id;
+            if (id in ids) {
+                dups.push(id);
+            }
+            ids[id] = 1;
         }
-        ids[id] = 1;
     });
     return dups;
 }
@@ -483,6 +488,7 @@ function addTrack(table,track) {
                 Math.round(track.enInfo.energy * 100),
                 Math.round(track.enInfo.danceability * 100),
                 Math.round(track.enInfo.loudness),
+                Math.round(track.enInfo.valence * 100),
                 formatDuration(Math.round(track.enInfo.duration_ms / 1000.0)),
                 Math.round(track.enInfo.acousticness * 100),
                 //Math.round(track.enInfo.song_hotttnesss * 100),
@@ -518,10 +524,12 @@ function fetchPlaylistTracks(playlist) {
 
             tracks = data.tracks ? data.tracks : data;
             _.each(tracks.items, function(item, i) {
-                item.track.which = curPlaylist.tracks.items.length;
-                curPlaylist.tracks.items.push(item);
-                if (item.track.id) {
-                    ids.push(item.track.id);
+                if (item.track) {
+                    item.track.which = curPlaylist.tracks.items.length;
+                    curPlaylist.tracks.items.push(item);
+                    if (item.track && item.track.id) {
+                        ids.push(item.track.id);
+                    }
                 }
             });
             return fetchAudioFeatures(ids)
@@ -529,15 +537,19 @@ function fetchPlaylistTracks(playlist) {
         .then(function(trackFeatures) {
             var fmap = {};
             _.each(trackFeatures, function(trackFeature, i) {
-                fmap[trackFeature.id] = trackFeature;
+                if (trackFeature && trackFeature.id) {
+                    fmap[trackFeature.id] = trackFeature;
+                }
             });
 
             _.each(tracks.items, function(item, i) {
-                var tid = item.track.id;
-                if (tid in fmap) {
-                    item.track.enInfo = fmap[tid];
-                } else {
-                    item.track.enInfo = {};
+                if (item.track && item.track.id) {
+                    var tid = item.track.id;
+                    if (tid in fmap) {
+                        item.track.enInfo = fmap[tid];
+                    } else {
+                        item.track.enInfo = {};
+                    }
                 }
             });
             updateTable(tracks);
@@ -667,8 +679,8 @@ function getSortedUrisFromTable(tracks, table) {
     // Instead, use rows().data() and calculate index from track column.
     return _.chain(table.rows({filter:'applied'}).data())
         // Web API only doesn't support local files for now.
-        .select(function(rowdata) { return rowdata[10].uri.startsWith("spotify:track:"); } )
-        .map (function(rowdata) {return rowdata[10].uri;})
+        .select(function(rowdata) { return rowdata[11].uri.startsWith("spotify:track:"); } )
+        .map (function(rowdata) {return rowdata[11].uri;})
         .value();
 }
 
@@ -828,7 +840,7 @@ function initTable() {
             info:false,
             dom:"t", // only show table (exclude search bar)
             columnDefs: [
-                { type : "time-uni", targets:7},
+                { type : "time-uni", targets:8},
             ]
      });
 
