@@ -536,6 +536,9 @@ function fetchPlaylistTracks(playlist) {
         })
         .then(function(trackFeatures) {
             var fmap = {};
+            if ('audio_attributes' in trackFeatures) {
+                trackFeatures = trackFeatures['audio_attributes']
+            }
             _.each(trackFeatures, function(trackFeature, i) {
                 if (trackFeature && trackFeature.id) {
                     fmap[trackFeature.id] = trackFeature;
