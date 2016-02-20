@@ -536,8 +536,14 @@ function fetchPlaylistTracks(playlist) {
         })
         .then(function(trackFeatures) {
             var fmap = {};
+            console.log('audio', trackFeatures);
+            // beta apis are funny like this ...
             if ('audio_attributes' in trackFeatures) {
                 trackFeatures = trackFeatures['audio_attributes']
+            }
+
+            if ('audio_features' in trackFeatures) {
+                trackFeatures = trackFeatures['audio_features']
             }
             _.each(trackFeatures, function(trackFeature, i) {
                 if (trackFeature && trackFeature.id) {
