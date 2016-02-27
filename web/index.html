@@ -503,6 +503,15 @@ function formatDuration(dur) {
     return mins + ":" + ssecs;
 }
 
+function stringToMode(keyString) {
+  return (keyString.substr(keyString.length-1)=='A'?0:1);
+}
+
+function stringToKey(keyString) {
+    var mode = stringToMode(keyString);
+    return keyMap[mode].indexOf(parseInt(keyString)-1);
+}
+
 function formatKey(key, mode) {
     if (!key || !mode) return '';
     return keyMap[mode][key]+(mode<1?'A':'B');
@@ -547,7 +556,13 @@ function updateTable(tracks) {
         onblur: 'submit'
     });
     $("#song-table tbody td:nth-child(11)").editable(function(sValue) {
-        songTable.cell(this).data(sValue);
+        var cell = songTable.cell(this);
+        var row = cell.index().row;
+        cell.data(sValue);
+        curPlaylist.tracks.items[row].track.enInfo.key = stringToKey(sValue);
+        curPlaylist.tracks.items[row].track.enInfo.mode = stringToMode(sValue);
+        cy.remove('node');
+        updateGraph(curPlaylist.tracks);
         return sValue;
     }, {
         event: 'dblclick',
