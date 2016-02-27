@@ -268,10 +268,37 @@ var cols = [
     'danceability', 'loudness', 'duration',
     'acousticness', 'popularity', 'key'
 ];
+var keyLabels = {
+  '': '(unknown)',
+  '11B': 'A (11B)',
+  '6B': 'Bb (6B)',
+  '1B': 'B (1B)',
+  '8B': 'C (8B)',
+  '3B': 'Db (3B)',
+  '10B': 'D (10B)',
+  '5B': 'Eb (5B)',
+  '12B': 'E (12B)',
+  '7B': 'F (7B)',
+  '2B': 'F# (2B)',
+  '9B': 'G (9B)',
+  '4B': 'Ab (4B)',
+  '8A': 'Am (8A)',
+  '3A': 'Bbm (3A)',
+  '10A': 'Bm (10A)',
+  '5A': 'Cm (5A)',
+  '12A': 'Dbm (12A)',
+  '7A': 'Dm (7A)',
+  '2A': 'Ebm (2A)',
+  '9A': 'Em (9A)',
+  '4A': 'Fm (4A)',
+  '11A': 'F#m (11A)',
+  '6A': 'Gm (Gm)',
+  '1A': 'Abm (1A)'
+};
 var keyMap = [
 //   C  Db  D  Eb E  F  F#  G  Ab A  Bb  B
-    [5, 12, 7, 2, 9, 4, 11, 6, 1, 8, 3, 10], // minor
-    [8, 3, 10, 5, 12, 7, 2, 9, 4, 11, 6, 1]  // major
+    [5, 12, 7, 2, 9, 4, 11, 6, 1, 8, 3, 10], // minor (A)
+    [8, 3, 10, 5, 12, 7, 2, 9, 4, 11, 6, 1]  // major (B)
 ];
 
 // disable save while loading and saving, no matter what the saved state
@@ -508,11 +535,24 @@ function updateTable(tracks) {
         addTrack(songTable, track);
     });
     songTable.draw();
-    $("#song-table tbody td").editable(function(sValue) {
+
+    // make cells editable
+    $("#song-table tbody td")
+      .not("#song-table tbody td:nth-child(11)")
+      .not("#song-table tbody td:nth-child(1)").editable(function(sValue) {
         songTable.cell(this).data(sValue);
         return sValue;
     }, {
         event: 'dblclick',
+        onblur: 'submit'
+    });
+    $("#song-table tbody td:nth-child(11)").editable(function(sValue) {
+        songTable.cell(this).data(sValue);
+        return sValue;
+    }, {
+        event: 'dblclick',
+        data: JSON.stringify(keyLabels),
+        type: 'select',
         onblur: 'submit'
     });
 
