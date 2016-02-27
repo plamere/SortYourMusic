@@ -240,6 +240,8 @@
     </div>
     <script src="lib/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" charset="utf-8"
+        src="//cdnjs.cloudflare.com/ajax/libs/jeditable.js/1.7.3/jeditable.min.js"></script>
+    <script type="text/javascript" charset="utf-8"
         src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" charset="utf-8"
         src="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
@@ -506,6 +508,14 @@ function updateTable(tracks) {
         addTrack(songTable, track);
     });
     songTable.draw();
+    $("#song-table tbody td").editable(function(sValue) {
+        songTable.cell(this).data(sValue);
+        return sValue;
+    }, {
+        event: 'dblclick',
+        onblur: 'submit'
+    });
+
     $(".spinner2").hide();
 }
 
@@ -547,7 +557,7 @@ function updateGraph(tracks) {
   });
 
   cy.layout({
-    name: 'circle',
+    name: 'breadthfirst',
     animate: true,
     animationDuration: 1500
   });
@@ -904,6 +914,7 @@ function showSaveSpinner(showSpinner) {
 }
 
 function initTable() {
+
     var table = $("#song-table").DataTable( {
             paging: false,
             searching: true,  // searching must be enabled for filtering to work
@@ -933,6 +944,7 @@ function initTable() {
             playTrack(track);
         }
     } );
+
     return table;
 }
 
