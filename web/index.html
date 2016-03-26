@@ -479,7 +479,7 @@ function updateTable(tracks) {
 }
 
 function addTrack(table,track) {
-    if ('tempo' in track.enInfo) {
+    if (track && track.enInfo && 'tempo' in track.enInfo) {
         table.row.add([
                 track.which + 1, 
                 track.name, 
