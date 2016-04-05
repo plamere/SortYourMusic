@@ -83,6 +83,14 @@ view) */
     background-color:#81b71a;
 }
 
+#song-table th {
+    font-size:14px !important;
+}
+
+#song-table td {
+    font-size:10px !important;
+}
+
 .fine-print {
   margin-bottom: 30px; /* (@padding-base-vertical * 5) */
 }

@@ -209,6 +209,7 @@
                                 <th> # </th>
                                 <th> Title </th>
                                 <th> Artist </th>
+                                <th> Release</th>
                                 <th> BPM </th>
                                 <th> Energy </th>
                                 <th> Dance </th>
@@ -255,10 +256,11 @@
 var accessToken = null;
 var curUserID = null;
 var curPlaylist = null;
+var albumDates = {};
 var audio = $("<audio>");
 var songTable;
 var cols = [
-    'order', 'title', 'artist', 'BPM', 'energy',
+    'order', 'title', 'artist', 'Date', 'BPM', 'energy',
     'danceability', 'loudness', 'valence', 'duration',
     'acousticness', 'popularity'
 ];
@@ -468,6 +470,22 @@ function fetchAudioFeatures(ids) {
     return getSpotifyQ(url, { ids: cids});
 }
 
+function fetchAlbums(ids) {
+    var cids = ids.join(',');
+    var url = "https://api.spotify.com/v1/albums";
+    return getSpotifyQ(url, { ids: cids});
+}
+
+function fetchAllAlbums(ids) {
+    var maxAlbumsPerCall = 20;
+    var qs = [];
+    for (var i = 0; i < ids.length; i += maxAlbumsPerCall) {
+        var aids = ids.slice(i, i + maxAlbumsPerCall);
+        qs.push(fetchAlbums(aids));
+    }
+    return Q.all(qs);
+}
+
 function updateTable(tracks) {
     $("#single-playlist-contents").show();
     _.each(tracks.items, function(item, i) {
@@ -480,10 +498,15 @@ function updateTable(tracks) {
 
 function addTrack(table,track) {
     if (track && track.enInfo && 'tempo' in track.enInfo) {
+        var relDate = '';
+        if (track.album.id in albumDates) {
+            relDate = albumDates[track.album.id];
+        }
         table.row.add([
                 track.which + 1, 
                 track.name, 
                 track.artists[0].name,
+                relDate,
                 Math.round(track.enInfo.tempo),
                 Math.round(track.enInfo.energy * 100),
                 Math.round(track.enInfo.danceability * 100),
@@ -508,6 +531,7 @@ function addTrack(table,track) {
                 '',
                 '',
                 '',
+                '',
                 track
         ]);
     }
@@ -521,6 +545,7 @@ function fetchPlaylistTracks(playlist) {
         return getSpotifyQ(url)
         .then(function(data) {
             var ids = [];
+            var aids = [];
 
             tracks = data.tracks ? data.tracks : data;
             _.each(tracks.items, function(item, i) {
@@ -530,11 +555,26 @@ function fetchPlaylistTracks(playlist) {
                     if (item.track && item.track.id) {
                         ids.push(item.track.id);
                     }
+                    if (!(_.contains(aids, item.track.album.id))) {
+                        if (!(item.track.album.id in albumDates)) {
+                            aids.push(item.track.album.id);
+                        }
+                    }
                 }
             });
-            return fetchAudioFeatures(ids)
+            return Q.all([fetchAllAlbums(aids), fetchAudioFeatures(ids)]);
         })
-        .then(function(trackFeatures) {
+        .then(function(results) {
+            var allAlbums = results[0];
+            var trackFeatures = results[1];
+            console.log('albums', allAlbums);
+            console.log('trackFeatues', trackFeatures);
+
+            _.each(allAlbums, function(albums) {
+                _.each(albums.albums, function(album) {
+                    albumDates[album.id] = album.release_date;
+                });
+            });
             var fmap = {};
             console.log('audio', trackFeatures);
             // beta apis are funny like this ...
