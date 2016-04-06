@@ -567,8 +567,6 @@ function fetchPlaylistTracks(playlist) {
         .then(function(results) {
             var allAlbums = results[0];
             var trackFeatures = results[1];
-            console.log('albums', allAlbums);
-            console.log('trackFeatues', trackFeatures);
 
             _.each(allAlbums, function(albums) {
                 _.each(albums.albums, function(album) {
@@ -576,7 +574,6 @@ function fetchPlaylistTracks(playlist) {
                 });
             });
             var fmap = {};
-            console.log('audio', trackFeatures);
             // beta apis are funny like this ...
             if ('audio_attributes' in trackFeatures) {
                 trackFeatures = trackFeatures['audio_attributes']
@@ -703,7 +700,7 @@ function playlistFilter( settings, data, dataIndex ) {
     var minBpm = parseInt( $('#min-bpm').val(), 10 );
     var maxBpm = parseInt( $('#max-bpm').val(), 10 );
     var includeDouble = $('#include-double').is(':checked');
-    var bpm = parseFloat( data[3] ) || 0;
+    var bpm = parseFloat( data[4] ) || 0;
 
     return inRange(bpm, minBpm, maxBpm) || 
         (includeDouble && inRange(bpm*2, minBpm, maxBpm));
@@ -728,8 +725,8 @@ function getSortedUrisFromTable(tracks, table) {
     // Instead, use rows().data() and calculate index from track column.
     return _.chain(table.rows({filter:'applied'}).data())
         // Web API only doesn't support local files for now.
-        .select(function(rowdata) { return rowdata[11].uri.startsWith("spotify:track:"); } )
-        .map (function(rowdata) {return rowdata[11].uri;})
+        .select(function(rowdata) { return rowdata[12].uri.startsWith("spotify:track:"); } )
+        .map (function(rowdata) {return rowdata[12].uri;})
         .value();
 }
 
@@ -889,7 +886,7 @@ function initTable() {
             info:false,
             dom:"t", // only show table (exclude search bar)
             columnDefs: [
-                { type : "time-uni", targets:8},
+                { type : "time-uni", targets:9},
             ]
      });
 
