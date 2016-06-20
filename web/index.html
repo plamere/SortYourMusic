@@ -489,8 +489,10 @@ function fetchAllAlbums(ids) {
 function updateTable(tracks) {
     $("#single-playlist-contents").show();
     _.each(tracks.items, function(item, i) {
-        var track = item.track;
-        addTrack(songTable, track);
+        if (item.track) {
+            var track = item.track;
+            addTrack(songTable, track);
+        }
     });
     songTable.draw();
     $(".spinner2").hide();
@@ -548,6 +550,7 @@ function fetchPlaylistTracks(playlist) {
             var aids = [];
 
             tracks = data.tracks ? data.tracks : data;
+            console.log('tracks', tracks);
             _.each(tracks.items, function(item, i) {
                 if (item.track) {
                     item.track.which = curPlaylist.tracks.items.length;
@@ -560,6 +563,8 @@ function fetchPlaylistTracks(playlist) {
                             aids.push(item.track.album.id);
                         }
                     }
+                } else {
+                    console.log('no track at', i);
                 }
             });
             return Q.all([fetchAllAlbums(aids), fetchAudioFeatures(ids)]);
