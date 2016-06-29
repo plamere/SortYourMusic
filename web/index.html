@@ -555,12 +555,14 @@ function fetchPlaylistTracks(playlist) {
                 if (item.track) {
                     item.track.which = curPlaylist.tracks.items.length;
                     curPlaylist.tracks.items.push(item);
-                    if (item.track && item.track.id) {
-                        ids.push(item.track.id);
-                    }
-                    if (!(_.contains(aids, item.track.album.id))) {
-                        if (!(item.track.album.id in albumDates)) {
-                            aids.push(item.track.album.id);
+                    if (!item.is_local) {
+                        if (item.track && item.track.id) {
+                            ids.push(item.track.id);
+                        }
+                        if (!(_.contains(aids, item.track.album.id))) {
+                            if (!(item.track.album.id in albumDates)) {
+                                aids.push(item.track.album.id);
+                            }
                         }
                     }
                 } else {
