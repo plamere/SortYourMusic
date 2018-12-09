@@ -94,6 +94,7 @@
                         acoustic the song is.
                         <li> <b> Popularity </b> - The higher the value the more
                         popular the song is.
+                        <li> <b> Rnd </b> - A randon number. Sort by this column to shuffle your playlist.
                     </ol>
 
                     <h2 class="text-center">FAQ</h2>
@@ -125,12 +126,11 @@
                         it on <a href="https://github.com/plamere/SortYourMusic">github</a>
                         <li> <b> Does Sort Your Music overwrite my playlist when
                             I save?</b> - 
-                            No, it creates a copy of the playlist. The new
+                            Only if you chose the 'Overwrite playlist option' otherwise
+                            it creates a copy of the playlist. The new
                             playlist is called 'Old playlist name sorted by
                             increasing X', where X is what you sorted the
-                            playlist on. Note that an older version of the app
-                            did overwrite your playlists, but some folks didn't
-                            like that.
+                            playlist on. 
                     </ol>
               </div> 
           </div>
@@ -198,7 +198,9 @@
                                     <label for="include-double">Include Doubled BPM</label>
                                     <input id="include-double" type="checkbox" checked="checked">
                                 </div>
-                                <!-- <button id="filter-button" class="btn btn-default btn-sm">Filter</button> -->
+                                 <!--
+                                 <button id="shuffle-button" class="pull-right btn btn-primary btn-sm">Shuffle</button> 
+                                 -->
                             </div>
                         </div>
                     </div>
@@ -218,6 +220,7 @@
                                 <th> Length </th>
                                 <th> Acoustic </th>
                                 <th> Pop. </th>
+                                <th> RND </th>
                             </tr>
                         </thead>
                         <tbody> </tbody>
@@ -262,7 +265,7 @@ var songTable;
 var cols = [
     'order', 'title', 'artist', 'Date', 'BPM', 'energy',
     'danceability', 'loudness', 'valence', 'duration',
-    'acousticness', 'popularity'
+    'acousticness', 'popularity', 'rnd'
 ];
 
 // disable save while loading and saving, no matter what the saved state
@@ -491,6 +494,7 @@ function updateTable(tracks) {
     _.each(tracks.items, function(item, i) {
         if (item.track) {
             var track = item.track;
+            track.rnd = Math.random() * 10000;
             addTrack(songTable, track);
         }
     });
@@ -518,6 +522,7 @@ function addTrack(table,track) {
                 Math.round(track.enInfo.acousticness * 100),
                 //Math.round(track.enInfo.song_hotttnesss * 100),
                 Math.round(track.popularity),
+                Math.round(track.rnd),
                 track
         ]);
     } else {
@@ -525,6 +530,7 @@ function addTrack(table,track) {
                 track.which + 1, 
                 track.name, 
                 track.artists[0].name,
+                '',
                 '',
                 '',
                 '',
@@ -732,8 +738,8 @@ function getSortedUrisFromTable(tracks, table) {
     // Instead, use rows().data() and calculate index from track column.
     return _.chain(table.rows({filter:'applied'}).data())
         // Web API only doesn't support local files for now.
-        .select(function(rowdata) { return rowdata[12].uri.startsWith("spotify:track:"); } )
-        .map (function(rowdata) {return rowdata[12].uri;})
+        .select(function(rowdata) { return rowdata[13].uri.startsWith("spotify:track:"); } )
+        .map (function(rowdata) {return rowdata[13].uri;})
         .value();
 }
 
