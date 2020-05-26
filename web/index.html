@@ -583,7 +583,9 @@ function fetchPlaylistTracks(playlist) {
 
             _.each(allAlbums, function(albums) {
                 _.each(albums.albums, function(album) {
-                    albumDates[album.id] = album.release_date;
+                    if (album != null && 'id' in album) {
+                        albumDates[album.id] = album.release_date;
+                    }
                 });
             });
             var fmap = {};
