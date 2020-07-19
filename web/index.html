@@ -44,8 +44,8 @@
           <div  id="jumbo-dialog">
             <h1 id='ttitle' >Sort Your Music</h1>
             <p id='ttext'>
-                Sort your Spotify playlists by any of 
-                a wide range of musical attributes such as tempo, loudness, 
+                Sort your Spotify playlists by any of
+                a wide range of musical attributes such as tempo, loudness,
                 valence, energy, danceability, popularity and more. Now with
                 <b>Filters</b>!
             </p>
@@ -64,7 +64,7 @@
                     follow these steps:
                     </p>
                     <ol>
-                        <li> <b> Login </b> with your Spotify credentials 
+                        <li> <b> Login </b> with your Spotify credentials
                         <li> <b> Pick </b> your playlist
                         <li> <b> Sort </b> the playlist by clicking on the column headings in
                         the playlist table
@@ -110,7 +110,7 @@
                         <li> <b> Where can I learn more about the Echo Nest song
                         attributes?</b> See <a
                         href="http://developer.echonest.com/acoustic-attributes.html">
-                        Acoustic Attributes Overview </a>
+                        Acoustic Attributes Overview</a>.
                         <li> <b> Can you add more attributes to the app?  </b>
                         Yes, but it is a tradeoff between display space,
                         complexity and utility. Let me know which attributes
@@ -122,24 +122,24 @@
                                 <li> Manual reordering, addition, and deletion.
                             </ul>
                         If you have any ideas for new feature, let me know.
-                        <li> <b> Is the source available</b> - Yes, you can find
-                        it on <a href="https://github.com/plamere/SortYourMusic">github</a>
+                        <li> <b> Is the source available?</b> - Yes, you can find
+                        it on <a href="https://github.com/plamere/SortYourMusic">GitHub</a>.
                         <li> <b> Does Sort Your Music overwrite my playlist when
-                            I save?</b> - 
+                            I save?</b> -
                             Only if you chose the 'Overwrite playlist option' otherwise
                             it creates a copy of the playlist. The new
                             playlist is called 'Old playlist name sorted by
                             increasing X', where X is what you sorted the
-                            playlist on. 
+                            playlist on.
                     </ol>
-              </div> 
+              </div>
           </div>
         </div>
 
       <div class="top jumbotron container-fluid">
           <p id='info' class="text-center"></p>
 
-          <div class="worker" id='playlists'> 
+          <div class="worker" id='playlists'>
                 <h2 class="prompt" > Pick a playlist: </h2>
                 <img class='spinner' width='100' alt='spinner' src='images/ajaxSpinner.gif'>
 
@@ -157,7 +157,7 @@
                 </div>
           </div>
 
-          <div class="worker" id='single-playlist'> 
+          <div class="worker" id='single-playlist'>
                 <h2> <a id='playlist-title'></a> </h2>
                 <img class='spinner2' width='100' alt='spinner' src='images/ajaxSpinner.gif'>
                 <div id='single-playlist-contents'>
@@ -199,13 +199,13 @@
                                     <input id="include-double" type="checkbox" checked="checked">
                                 </div>
                                  <!--
-                                 <button id="shuffle-button" class="pull-right btn btn-primary btn-sm">Shuffle</button> 
+                                 <button id="shuffle-button" class="pull-right btn btn-primary btn-sm">Shuffle</button>
                                  -->
                             </div>
                         </div>
                     </div>
 
-                    <table id='song-table' class="hover table table-condensed table-bordered table-striped">  
+                    <table id='song-table' class="hover table table-condensed table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th> # </th>
@@ -362,7 +362,7 @@ function callSpotifyQ(type, url, json) {
                     reject(textStatus);
                 }
             }
-        });  
+        });
     });
 }
 
@@ -509,8 +509,8 @@ function addTrack(table,track) {
             relDate = albumDates[track.album.id];
         }
         table.row.add([
-                track.which + 1, 
-                track.name, 
+                track.which + 1,
+                track.name,
                 track.artists[0].name,
                 relDate,
                 Math.round(track.enInfo.tempo),
@@ -527,8 +527,8 @@ function addTrack(table,track) {
         ]);
     } else {
         table.row.add([
-                track.which + 1, 
-                track.name, 
+                track.which + 1,
+                track.name,
                 track.artists[0].name,
                 '',
                 '',
@@ -619,7 +619,7 @@ function fetchPlaylistTracks(playlist) {
                 return fetchLoop(tracks.next);
             }
         })
-        
+
     }
 
     // Spotify API defect? specifying limit will actually return up to 100 items anyway.
@@ -717,7 +717,7 @@ function playlistFilter( settings, data, dataIndex ) {
     var includeDouble = $('#include-double').is(':checked');
     var bpm = parseFloat( data[4] ) || 0;
 
-    return inRange(bpm, minBpm, maxBpm) || 
+    return inRange(bpm, minBpm, maxBpm) ||
         (includeDouble && inRange(bpm*2, minBpm, maxBpm));
 }
 
@@ -777,7 +777,7 @@ function saveTidsToPlaylist(playlist, tids, replace) {
     var sliceLength = 100;
     var this_tids = tids.slice(0, sliceLength);
     var remaining = tids.slice(sliceLength);
-    var url = "https://api.spotify.com/v1/users/" + playlist.owner.id + 
+    var url = "https://api.spotify.com/v1/users/" + playlist.owner.id +
          "/playlists/" + playlist.id + '/tracks';
     var type;
     var json;
@@ -794,7 +794,7 @@ function saveTidsToPlaylist(playlist, tids, replace) {
     .then(function() {
         if (remaining.length > 0) {
             return saveTidsToPlaylist(playlist, remaining, false);
-        } 
+        }
     })
     .catch(function() {
         return Q.reject("Trouble saving tracks to the playlist");
@@ -843,7 +843,7 @@ function getPlaylistState() {
         firstOrder = _.clone(selectedTableOrder[0]); // object is reused by datatable!
     }
 
-    return { 
+    return {
         minBpm: parseInt( $('#min-bpm').val(), 10 ),
         maxBpm: parseInt( $('#max-bpm').val(), 10 ),
         includeDouble: $('#include-double').is(':checked'),
