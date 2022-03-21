@@ -1,122 +1,123 @@
 /* Sticky footer styles */
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 28px;
-  padding-top: 0;
-  /*background:rgb(129,175,177) !important;*/
+    /* Margin bottom by footer height */
+    margin-bottom: 28px;
+    padding-top: 0;
+    /*background:rgb(129,175,177) !important;*/
 }
 
 #footer {
-  margin-top:10px;
-  width: 100%;
-  height: 18px;
+    margin-top: 10px;
+    width: 100%;
+    height: 18px;
 }
 
 #footer p {
-    font-size:12px;
+    font-size: 12px;
 }
 
 .sp-jumbotron-custom-inverse {
-  /*background-image: url(images/background.jpg);*/
+    /*background-image: url(images/background.jpg);*/
 }
 
 #main {
     background-image: url(images/saxman.jpg);
-}   
+}
 
 #playlists {
-    display:none;
-    font-size:18px;
+    display: none;
+    font-size: 18px;
 }
 
 #single-playlist {
-    display:none;
+    display: none;
 }
 
 
 @media screen and (min-width: 768px) {
-  .sp-jumbotron-custom {
-  }
+    .sp-jumbotron-custom {
+    }
 }
 
 
 .h1 {
-  margin-bottom: 42px; /* (@padding-base-vertical * 7) */
+    margin-bottom: 42px; /* (@padding-base-vertical * 7) */
 }
 
 .top {
-    margin-top:66px;
-    position:relative;
+    margin-top: 66px;
+    position: relative;
 }
 
 img {
-  margin: 0 auto;
+    margin: 0 auto;
 }
 
 h3 {
-  font-weight: 600; /* @font-weight-semibold */
-  margin-top: 12px;
+    font-weight: 600; /* @font-weight-semibold */
+    margin-top: 12px;
 }
 
 
 p {
-  margin-bottom: 18px; /* a little more breathing room between feature tiles in mobile
-view) */
+    margin-bottom: 18px;
+    /* a little more breathing room between feature tiles in mobile
+   view) */
 }
 
 @media screen and (min-width: 992px) {
-  p {
-    margin-bottom: 12px; /* reset to default */
-  }
+    p {
+        margin-bottom: 12px; /* reset to default */
+    }
 }
 
 #info {
-    font-size:32px;
+    font-size: 32px;
 }
 
 #song-table tbody tr.selected {
-    background-color:#81b71a;
+    background-color: #81b71a;
 }
 
 #song-table th {
-    font-size:14px !important;
+    font-size: 14px !important;
 }
 
 #song-table td {
-    font-size:10px !important;
+    font-size: 10px !important;
 }
 
 .fine-print {
-  margin-bottom: 30px; /* (@padding-base-vertical * 5) */
+    margin-bottom: 30px; /* (@padding-base-vertical * 5) */
 }
 
 #go {
-    margin-bottom:20px;
+    margin-bottom: 20px;
 }
 
 
 #ttext {
-    margin-top:20px;
-    margin-bottom:30px;
+    margin-top: 20px;
+    margin-bottom: 30px;
     width: 80%;
-    margin-left:auto;
-    margin-right:auto;
+    margin-left: auto;
+    margin-right: auto;
 
 }
 
 #ttitle {
-    color:white;
+    color: white;
 }
 
 #jumbo-dialog {
-    color:white;
-    background: rgba(50,50,50, 0.3);
-    border-radius:15px;
+    color: white;
+    background: rgba(50, 50, 50, 0.3);
+    border-radius: 15px;
 }
 
 
@@ -125,14 +126,15 @@ view) */
 }
 
 #playlist-list {
-  text-align: left
-}
-#playlist-list th {
-  font-weight: bold
+    text-align: left
 }
 
-#min-bpm,#max-bpm {
-  width:100px;
+#playlist-list th {
+    font-weight: bold
+}
+
+#min-bpm, #max-bpm {
+    width: 100px;
 }
 
 /* Loading spinner based on following stackoverflow answer:
@@ -140,20 +142,20 @@ view) */
     http://jsfiddle.net/oshybystyi/v04ag5ch/4/ */
 
 .has-spinner .fa-spinner {
-  opacity: 0;
-  max-width: 0;
+    opacity: 0;
+    max-width: 0;
 
-  -webkit-transition: opacity 0.25s, max-width 0.45s; 
-  -moz-transition: opacity 0.25s, max-width 0.45s;
-  -o-transition: opacity 0.25s, max-width 0.45s;
-  transition: opacity 0.25s, max-width 0.45s; /* Duration fixed since we animate additional hidden width */
+    -webkit-transition: opacity 0.25s, max-width 0.45s;
+    -moz-transition: opacity 0.25s, max-width 0.45s;
+    -o-transition: opacity 0.25s, max-width 0.45s;
+    transition: opacity 0.25s, max-width 0.45s; /* Duration fixed since we animate additional hidden width */
 }
 
 .has-spinner.active {
-  cursor:progress;
+    cursor: progress;
 }
 
 .has-spinner.active .fa-spinner {
-  opacity: 1;
-  max-width: 50px; /* More than it will ever come, notice that this affects on animation duration */
+    opacity: 1;
+    max-width: 50px; /* More than it will ever come, notice that this affects on animation duration */
 }
