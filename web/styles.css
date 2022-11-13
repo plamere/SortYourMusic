@@ -79,16 +79,9 @@ view) */
     font-size:32px;
 }
 
-#song-table tbody tr.selected {
-    background-color:#81b71a;
-}
-
-#song-table th {
-    font-size:14px !important;
-}
-
-#song-table td {
-    font-size:10px !important;
+#song-table {
+  width:100%;
+  background-color:#ffffff;
 }
 
 .fine-print {

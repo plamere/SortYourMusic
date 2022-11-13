@@ -6,12 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link type="text/css" href="styles.css" rel="stylesheet" />
-    <!-- <link rel="stylesheet" type="text/css"
-    href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css"> -->
+    <link type="text/css" href="styles.css?v1" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.13.1/datatables.min.css"/>
     <link href="dist/sp-bootstrap.min.css" rel="stylesheet" media="screen">
-    <link rel="stylesheet" type="text/css"
-    href="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <title>Sort Your Music</title>
     <!-- Custom styles for this template -->
@@ -26,6 +24,7 @@
       <div class="container">
         <div class="navbar-header">
           <a class="navbar-brand" href="index.html">
+            <span class="navbar-logo"></span>
             <span class="navbar-title">Sort Your Music</span>
           </a>
         </div>
@@ -69,10 +68,10 @@
                         <li>  <b> Save </b> the sorted playlist to Spotify
                     </ol>
 
-                    <h2 class="text-center">Tap into the power of The Echo Nest</h2>
+                    <h2 class="text-center">Tap into the power of Spotify's song attributes</h2>
                     <p>
                     <b> Sort Your Music </b> lets you sort your playlist
-                    based on a number of Echo Nest song attributes including:
+                    based on a number of Spotify's song attributes including:
                     </p>
 
                     <ol>
@@ -92,6 +91,7 @@
                         acoustic the song is.
                         <li> <b> Popularity </b> - The higher the value the more
                         popular the song is.
+                        <li> <b> A.Sep </b> - maximizes the artist separation in the set
                         <li> <b> Rnd </b> - A randon number. Sort by this column to shuffle your playlist.
                     </ol>
 
@@ -105,9 +105,9 @@
                         the <a
                         href="http://developer.spotify.com">Spotify</a> API.
 
-                        <li> <b> Where can I learn more about the Echo Nest song
+                        <li> <b> Where can I learn more about the Spotify song
                         attributes?</b> See <a
-                        href="http://developer.echonest.com/acoustic-attributes.html">
+                        href="https://developer.spotify.com/documentation/web-api/reference/#/operations/get-audio-analysis">
                         Acoustic Attributes Overview </a>
                         <li> <b> Can you add more attributes to the app?  </b>
                         Yes, but it is a tradeoff between display space,
@@ -145,6 +145,7 @@
                     <table id='playlist-list' class="table">
                         <thead>
                             <tr>
+                            <th> Cover </th>
                             <th>Name</th>
                             <th>Track Count</th>
                             <th>Owner</th>
@@ -185,15 +186,15 @@
                         <div class="panel-body">
                             <div class="form-inline">
                                 <div class="form-group">
-                                    <label for="min-bpm">Minimum BPM</label>
+                                    <label for="min-bpm">BPM Filter Minimum:</label>
                                     <input id="min-bpm" type="number" class="form-control" placeholder="0">
                                 </div>
                                 <div class="form-group">
-                                    <label for="max-bpm">Maximum BPM</label>
+                                    <label for="max-bpm">Maximum:</label>
                                     <input id="max-bpm" type="number" class="form-control" placeholder="1000">
                                 </div>
                                 <div class="form-group">
-                                    <label for="include-double">Include Doubled BPM</label>
+                                    <label for="include-double">Include doubled BPM</label>
                                     <input id="include-double" type="checkbox" checked="checked">
                                 </div>
                                  <!--
@@ -203,22 +204,23 @@
                         </div>
                     </div>
 
-                    <table id='song-table' class="hover table table-condensed table-bordered table-striped">  
+                    <table id='song-table' class="display stripe compact cell-border">  
                         <thead>
                             <tr>
-                                <th> # </th>
-                                <th> Title </th>
-                                <th> Artist </th>
-                                <th> Release</th>
-                                <th> BPM </th>
-                                <th> Energy </th>
-                                <th> Dance </th>
-                                <th> Loud </th>
-                                <th> Valence </th>
-                                <th> Length </th>
-                                <th> Acoustic </th>
-                                <th> Pop. </th>
-                                <th> RND </th>
+                                <th title="original track order"> # </th>
+                                <th title="the title of the track"> Title </th>
+                                <th title="the primary artist of the track"> Artist </th>
+                                <th title="date of release"> Release</th>
+                                <th title="the tempo, in beats-per-minute of the track"> BPM </th>
+                                <th title="the overall energy of the track"> Energy </th>
+                                <th title="the danceability of the track"> Dance </th>
+                                <th title="the loudness in dBs of the track"> Loud </th>
+                                <th title="how positive is the track"> Valence </th>
+                                <th title="the duration of the track"> Length </th>
+                                <th title="how acoustic is the track"> Acoustic </th>
+                                <th title="how popular is the track"> Pop. </th>
+                                <th title="maximizes artist separation"> A.Sep </th>
+                                <th title="a random value, suitable for generating a random shuffle"> Rnd </th>
                             </tr>
                         </thead>
                         <tbody> </tbody>
@@ -239,10 +241,9 @@
       </div>
     </div>
     <script src="lib/jquery-1.11.1.min.js"></script>
-    <script type="text/javascript" charset="utf-8"
-        src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" charset="utf-8"
-        src="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+ 
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.13.1/datatables.min.js"></script>
+
     <!-- Deprecated: Replacement is the datetime plug-in (http://datatables.net/blog/2014-12-18) -->
     <script type="text/javascript" charset="utf-8"
         src="//cdn.datatables.net/plug-ins/1.10.7/sorting/time.js"></script>
@@ -263,7 +264,7 @@ var songTable;
 var cols = [
     'order', 'title', 'artist', 'Date', 'BPM', 'energy',
     'danceability', 'loudness', 'valence', 'duration',
-    'acousticness', 'popularity', 'rnd'
+    'acousticness', 'popularity', 'artist separation', 'rnd'
 ];
 
 // disable save while loading and saving, no matter what the saved state
@@ -274,12 +275,29 @@ var savedState = {};
 
 function error(msg) {
     info(msg);
+    if (msg != "") {
+        alert(msg);
+    }
 }
 
 function getCurSortName() {
-    var currentState = getPlaylistState();
-    var prefix = (currentState.order[1] == 'asc') ? 'increasing ' : 'decreasing ';
-    return prefix + cols[currentState.order[0]];
+    let currentState = getPlaylistState();
+    let col = currentState.order[0];
+    if (directionMatters(col)) {
+        let prefix = (currentState.order[1] == 'asc') ? 'increasing ' : 'decreasing ';
+        return prefix + cols[col];
+    } else {
+        return cols[col];
+    }
+}
+
+function directionMatters(col) {
+    let cname = cols[col];
+    console.log("DM", col, cname);
+    if (cname === "rnd" || cname === "artist separation") {
+        return false;
+    }
+    return true;
 }
 
 function info(msg) {
@@ -440,6 +458,48 @@ function fetchSinglePlaylist(playlist) {
     });
 }
 
+function smartOrder(items) {
+    // a smart ordering of the tracks
+    // smart ordering will try to equally distribute artists
+    let length = items.length;
+    let artist_counts = new Proxy({}, { get: (target, name) => name in target ? target[name] : 0 })
+    _.each(items, function(item, i) {
+        if (item.track) {
+            var track = item.track;
+            var artist = track.artists[0].name;
+            artist_counts[artist]++;
+        }
+    });
+
+    let artist_counts_so_far = new Proxy({}, { get: (target, name) => name in target ? target[name] : 0 })
+    let out = [];
+    let all_items = items.slice();
+
+    while (all_items.length > 0) {
+        let best_delta = 1000;
+        let best_item = all_items[0];
+        _.each(all_items, function(item, i) {
+            if (item.track) {
+                var track = item.track;
+                let artist = track.artists[0].name;
+                let desired_percentage = artist_counts[artist] / length;
+                let next_percentage = (artist_counts_so_far[artist] + 1) / (out.length + 1);
+                let delta_percentage = Math.abs(next_percentage - desired_percentage);
+                if (delta_percentage < best_delta) {
+                    best_delta = delta_percentage;
+                    best_item = item;
+                }
+            } else {
+                print("nope", item);
+            }
+        });
+        all_items = all_items.filter(item => item != best_item);
+        best_item.track.smart = out.length;
+        out.push(best_item);
+        artist_counts_so_far[best_item.track.artists[0].name] += 1;
+    }
+}
+
 function findDuplicates(playlist) {
     var ids = {};
     var dups = [];
@@ -487,9 +547,13 @@ function fetchAllAlbums(ids) {
     return Q.all(qs);
 }
 
-function updateTable(tracks) {
+function clearTable() {
+    songTable.clear();
+}
+
+function updateTable(items) {
     $("#single-playlist-contents").show();
-    _.each(tracks.items, function(item, i) {
+    _.each(items, function(item, i) {
         if (item.track) {
             var track = item.track;
             track.rnd = Math.random() * 10000;
@@ -520,6 +584,7 @@ function addTrack(table,track) {
                 Math.round(track.enInfo.acousticness * 100),
                 //Math.round(track.enInfo.song_hotttnesss * 100),
                 Math.round(track.popularity),
+                Math.round(track.smart),
                 Math.round(track.rnd),
                 track
         ]);
@@ -538,12 +603,14 @@ function addTrack(table,track) {
                 '',
                 '',
                 '',
+                '',
                 track
         ]);
     }
 }
 
 function fetchPlaylistTracks(playlist) {
+    let all_items = [];
 
     function fetchLoop(url) {
         var tracks;
@@ -554,8 +621,8 @@ function fetchPlaylistTracks(playlist) {
             var aids = [];
 
             tracks = data.tracks ? data.tracks : data;
-            console.log('tracks', tracks);
             _.each(tracks.items, function(item, i) {
+                all_items.push(item);
                 if (item.track) {
                     item.track.which = curPlaylist.tracks.items.length;
                     curPlaylist.tracks.items.push(item);
@@ -611,14 +678,19 @@ function fetchPlaylistTracks(playlist) {
                     }
                 }
             });
-            updateTable(tracks);
+            updateTable(tracks.items);
 
             if (tracks.next) {
                 return fetchLoop(tracks.next);
+            } else {
+                console.log("tracks loaded");
+                smartOrder(all_items);
+                clearTable();
+                updateTable(all_items);
             }
         })
-        
     }
+
 
     // Spotify API defect? specifying limit will actually return up to 100 items anyway.
     var startUrl = "https://api.spotify.com/v1/users/" + playlist.owner.id +
@@ -667,6 +739,15 @@ function playlistLoaded(playlists) {
         _.each(playlists.items, function(playlist) {
             if (goodPlaylist(playlist)) {
                 var tr = $("<tr>");
+                var tiny_image_url = get_tiny_image(playlist);
+                var imageCell = $("<td>");
+                if (tiny_image_url) {
+                    var image = $("<img>");
+                    image.attr("src", tiny_image_url);
+                    image.attr("width", "60px");
+                    imageCell.append(image)
+                }
+                tr.append(imageCell);
 
                 var tdName = $("<td>")
 
@@ -694,6 +775,15 @@ function playlistLoaded(playlists) {
         }
     } else {
         error("Sorry, I couldn't find your playlists");
+    }
+}
+
+function get_tiny_image(playlist) {
+    var len = playlist.images.length;
+    if (len > 0) {
+        return playlist.images[len - 1]['url'];
+    } else {
+        return null;
     }
 }
 
@@ -738,8 +828,8 @@ function getSortedUrisFromTable(tracks, table) {
     // Instead, use rows().data() and calculate index from track column.
     return _.chain(table.rows({filter:'applied'}).data())
         // Web API only doesn't support local files for now.
-        .select(function(rowdata) { return rowdata[13].uri.startsWith("spotify:track:"); } )
-        .map (function(rowdata) {return rowdata[13].uri;})
+        .select(function(rowdata) { return rowdata[14].uri.startsWith("spotify:track:"); } )
+        .map (function(rowdata) {return rowdata[14].uri;})
         .value();
 }
 
@@ -768,6 +858,7 @@ function savePlaylist(playlist, createNewPlaylist) {
     .finally(function() {
         showSaveSpinner(false);
         enableSaveButtonWhenNeeded();
+        error("");
     })
 }
 
@@ -795,6 +886,7 @@ function saveTidsToPlaylist(playlist, tids, replace) {
         } 
     })
     .catch(function() {
+        console.log("reject");
         return Q.reject("Trouble saving tracks to the playlist");
     });
 }
@@ -811,7 +903,7 @@ function createPlaylist(owner, name, isPublic) {
 function createOrReusePlaylist(playlist, createNewPlaylist) {
     if (createNewPlaylist) {
         var sortName = getCurSortName();
-        return createPlaylist(curUserID, playlist.name + " sorted by " + sortName, playlist.public);
+        return createPlaylist(curUserID, playlist.name + " ordered by " + sortName, playlist.public);
     } else {
         return Q(playlist);
     }
@@ -957,9 +1049,11 @@ $(document).ready(
         }
 
         $("#save,#dropSave").on('click', function() {
+            info("saving ...")
             savePlaylist(curPlaylist, true);
         });
         $("#dropOverwrite").on('click', function() {
+            info("overwriting ...")
             savePlaylist(curPlaylist, false);
         });
 
