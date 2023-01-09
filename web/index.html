@@ -251,7 +251,7 @@
     <script src="lib/underscore-min.js"></script>
     <script type="text/javascript" charset="utf-8"
         src="//cdnjs.cloudflare.com/ajax/libs/q.js/1.4.1/q.min.js"></script>
-    <script src="config.js"></script>
+    <script src="config.js?v2"></script>
 
 <script>
 "use strict";
@@ -490,7 +490,7 @@ function smartOrder(items) {
                     best_item = item;
                 }
             } else {
-                print("nope", item);
+                console.log("nope", item);
             }
         });
         all_items = all_items.filter(item => item != best_item);
