@@ -866,8 +866,7 @@ function saveTidsToPlaylist(playlist, tids, replace) {
     var sliceLength = 100;
     var this_tids = tids.slice(0, sliceLength);
     var remaining = tids.slice(sliceLength);
-    var url = "https://api.spotify.com/v1/users/" + playlist.owner.id + 
-         "/playlists/" + playlist.id + '/tracks';
+    var url = "https://api.spotify.com/v1/playlists/" + playlist.id + '/tracks';
     var type;
     var json;
 
