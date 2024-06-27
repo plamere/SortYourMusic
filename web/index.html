@@ -293,7 +293,6 @@ function getCurSortName() {
 
 function directionMatters(col) {
     let cname = cols[col];
-    console.log("DM", col, cname);
     if (cname === "rnd" || cname === "artist separation") {
         return false;
     }
@@ -779,9 +778,13 @@ function playlistLoaded(playlists) {
 }
 
 function get_tiny_image(playlist) {
-    var len = playlist.images.length;
-    if (len > 0) {
-        return playlist.images[len - 1]['url'];
+    if (playlist.images) {
+        var len = playlist.images.length;
+        if (len > 0) {
+            return playlist.images[len - 1]['url'];
+        } else {
+            return null;
+        }
     } else {
         return null;
     }
