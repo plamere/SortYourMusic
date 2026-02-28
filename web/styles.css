@@ -26,18 +26,65 @@ a:hover, a:focus {
 
 /* --- Navbar --- */
 .navbar-default {
-  background-color: #000 !important;
+  background-color: #181818 !important;
   border: none !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.06);
+  min-height: 56px !important;
 }
-.navbar-default .navbar-brand,
+.navbar-default .navbar-brand {
+  color: #b3b3b3 !important;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 15px !important;
+  height: 56px !important;
+}
+.navbar-default .navbar-brand:hover {
+  color: #e1e1e1 !important;
+}
 .navbar-default .navbar-title {
-  color: #fff !important;
+  color: #b3b3b3 !important;
+  border-left: none !important;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+  font-weight: 600 !important;
+  font-size: 22px !important;
+  text-transform: none !important;
+  letter-spacing: -0.01em !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  float: none !important;
+}
+.navbar-default .navbar-brand:hover .navbar-title {
+  color: #e1e1e1 !important;
+}
+/* Navbar links */
+.navbar-default .navbar-nav > li > a {
+  color: #b3b3b3 !important;
+  font-weight: 500;
+  font-size: 14px;
+  transition: color 0.15s;
+}
+.navbar-default .navbar-nav > li > a:hover {
+  color: #e1e1e1 !important;
+  background-color: transparent !important;
+}
+
+/* Green dot as a minimal brand mark */
+.navbar-default .navbar-brand::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background-color: #1db954;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 /* --- Hero / Jumbotron --- */
 #main {
-  background: linear-gradient(135deg, #1db954 0%, #121212 70%) !important;
+  background: linear-gradient(160deg, #1a7a3a 0%, #121212 60%) !important;
   background-image: none !important;
 }
 
@@ -52,14 +99,20 @@ a:hover, a:focus {
 }
 
 #jumbo-dialog {
-  color: white;
-  background: rgba(0, 0, 0, 0.45);
-  border-radius: 15px;
-  padding: 30px;
+  color: #b3b3b3;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 16px;
+  padding: 40px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 #ttitle {
-  color: white;
+  color: #e1e1e1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 #ttext {
@@ -71,7 +124,8 @@ a:hover, a:focus {
 }
 
 #info {
-  font-size: 32px;
+  font-size: 14px;
+  color: #b3b3b3;
 }
 
 /* --- Buttons (pill-shaped, Spotify style) --- */
@@ -296,13 +350,13 @@ table.dataTable.cell-border tbody td {
 /* --- CSS Spinner (replaces ajaxSpinner.gif) --- */
 .spinner, .spinner2 {
   display: none;
-  width: 48px;
-  height: 48px;
-  border: 4px solid #282828;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #282828;
   border-top-color: #1db954;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
-  margin: 20px auto;
+  margin: 12px auto;
 }
 
 @keyframes spin {
@@ -479,15 +533,24 @@ img {
   box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.25);
 }
 
-/* --- FAQ list --- */
-.faq-list {
-  list-style: none;
-  padding-left: 0;
+/* --- FAQ --- */
+.faq dt {
+  color: #e1e1e1;
+  font-weight: 600;
+  font-size: 16px;
+  padding-top: 16px;
+  margin-bottom: 4px;
 }
-.faq-list li {
-  padding: 8px 0;
+.faq dt:first-child {
+  padding-top: 0;
+}
+.faq dd {
+  color: #b3b3b3;
+  margin-left: 0;
+  padding-bottom: 16px;
   border-bottom: 1px solid #282828;
 }
-.faq-list li:last-child {
+.faq dd:last-child {
   border-bottom: none;
+  padding-bottom: 0;
 }

@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/v/dt/dt-1.13.1/datatables.min.css">
     <link href="dist/sp-bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="styles.css?v2">
+    <link rel="stylesheet" href="styles.css?v3">
     <title>Sort Your Music</title>
 </head>
   <body >
@@ -22,6 +22,9 @@
           </a>
         </div>
         <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a id="faq-link" href="#faq-section">FAQ</a></li>
+          </ul>
         </div><!--/.navbar-collapse -->
       </div>
     </div>
@@ -42,26 +45,26 @@
           </div>
       </div>
 
-        <div class="container worker">
+        <div id="faq-section" class="container" style="display:none">
           <div class="row features">
              <div class="col-md-offset-2 col-md-8">
-                    <h2 class="text-center">How it works</h2>
-                    <ol>
-                        <li><b>Login</b> with your Spotify account</li>
-                        <li><b>Pick</b> a playlist</li>
-                        <li><b>Sort</b> by clicking column headers (BPM, energy, danceability, valence, and more)</li>
-                        <li><b>Save</b> the new order back to Spotify</li>
-                    </ol>
-
-                    <h2 class="text-center">Available attributes</h2>
-                    <p>Sort by <b>BPM</b>, <b>Energy</b>, <b>Danceability</b>, <b>Loudness</b>, <b>Valence</b>, <b>Length</b>, <b>Acousticness</b>, <b>Popularity</b>, <b>Artist Separation</b>, or <b>Shuffle</b> (random). Use the BPM filter to narrow results.</p>
-
                     <h2 class="text-center">FAQ</h2>
-                    <ul class="faq-list">
-                        <li><b>Does it overwrite my playlist?</b> Only if you choose "Overwrite Playlist." Otherwise it creates a new copy.</li>
-                        <li><b>How was this built?</b> Using the <a href="https://developer.spotify.com">Spotify Web API</a>.</li>
-                        <li><b>Is the source available?</b> Yes, on <a href="https://github.com/plamere/SortYourMusic">GitHub</a>.</li>
-                    </ul>
+                    <dl class="faq">
+                        <dt>How does it work?</dt>
+                        <dd>Login with Spotify, pick a playlist, click any column header to sort, then save the new order back to Spotify.</dd>
+
+                        <dt>What can I sort by?</dt>
+                        <dd>BPM, Energy, Danceability, Loudness, Valence, Length, Acousticness, Popularity, Artist Separation, or Shuffle (random). You can also filter by BPM range.</dd>
+
+                        <dt>Does it overwrite my playlist?</dt>
+                        <dd>Only if you choose "Overwrite Playlist." Otherwise it creates a new copy named after the sort you applied.</dd>
+
+                        <dt>Is my data safe?</dt>
+                        <dd>Sort Your Music runs entirely in your browser. Your Spotify credentials are never sent to our server — authentication uses Spotify's own OAuth flow.</dd>
+
+                        <dt>How was this built?</dt>
+                        <dd>Using the <a href="https://developer.spotify.com">Spotify Web API</a>. The source is on <a href="https://github.com/plamere/SortYourMusic">GitHub</a>.</dd>
+                    </dl>
               </div>
           </div>
         </div>
@@ -710,11 +713,11 @@ function formatOwner(owner) {
 function playlistLoaded(playlists) {
     var pl = $("#playlist-list tbody");
     $(".prompt").show();
-    $(".spinner").hide();
     if (playlists) {
-        info("");
+        var count = pl.children().length;
         _.each(playlists.items, function(playlist) {
             if (goodPlaylist(playlist)) {
+                count++;
                 var tr = $("<tr>");
                 var tiny_image_url = get_tiny_image(playlist);
                 var imageCell = $("<td>");
@@ -748,9 +751,15 @@ function playlistLoaded(playlists) {
             }
         });
         if (playlists.next) {
+            info("Loaded " + count + " playlists...");
             getSpotify(playlists.next, null, playlistLoaded);
+        } else {
+            info("");
+            $(".spinner").hide();
         }
     } else {
+        info("");
+        $(".spinner").hide();
         error("Sorry, I couldn't find your playlists");
     }
 }
@@ -1050,6 +1059,16 @@ $(document).ready(
 
         $("#pick").on('click', function() {
             showPlaylists();
+        });
+
+        $("#faq-link").on('click', function(e) {
+            e.preventDefault();
+            var $faq = $("#faq-section");
+            $faq.slideToggle(300, function() {
+                if ($faq.is(':visible')) {
+                    $('html, body').animate({ scrollTop: $faq.offset().top - 70 }, 300);
+                }
+            });
         });
 
         $.fn.dataTable.ext.search.push(playlistFilter);
