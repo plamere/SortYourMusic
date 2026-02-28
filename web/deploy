@@ -1,1 +1,2 @@
-s3cmd sync --acl-public *  s3://static.echonest.com/SortYourMusic/
+#!/bin/bash
+rsync -azv . root@50.116.51.150:/home/www/sortyourmusic/

@@ -2,3 +2,7 @@
 *.pyc
 projenv
 songdata
+deploy.md
+CLAUDE.md
+logger/
+remote/

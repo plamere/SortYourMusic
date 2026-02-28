@@ -1,1 +1,0 @@
-rsync -azv . plamere@playlistmachinery.com:/home/www/sortyourmusic
