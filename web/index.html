@@ -6,11 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link type="text/css" href="styles.css?v1" rel="stylesheet" />
-
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.13.1/datatables.min.css"/>
     <link href="dist/sp-bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link type="text/css" href="styles.css?v2" rel="stylesheet" />
     <title>Sort Your Music</title>
     <!-- Custom styles for this template -->
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -24,13 +23,10 @@
       <div class="container">
         <div class="navbar-header">
           <a class="navbar-brand" href="index.html">
-            <span class="navbar-logo"></span>
             <span class="navbar-title">Sort Your Music</span>
           </a>
         </div>
         <div class="navbar-collapse collapse">
-          <a href="http://www.spotify.com" class="btn btn-primary navbar-btn navbar-right">Get
-          Spotify</a>
         </div><!--/.navbar-collapse -->
       </div>
     </div>
@@ -139,7 +135,7 @@
 
           <div class="worker" id='playlists'> 
                 <h2 class="prompt" > Pick a playlist: </h2>
-                <img class='spinner' width='100' alt='spinner' src='images/ajaxSpinner.gif'>
+                <div class='spinner'></div>
 
                 <div class="panel panel-default">
                     <table id='playlist-list' class="table">
@@ -158,7 +154,7 @@
 
           <div class="worker" id='single-playlist'> 
                 <h2> <a id='playlist-title'></a> </h2>
-                <img class='spinner2' width='100' alt='spinner' src='images/ajaxSpinner.gif'>
+                <div class='spinner2'></div>
                 <div id='single-playlist-contents'>
 
                     <div class="panel panel-default">

@@ -1,152 +1,420 @@
-/* Sticky footer styles */
+/* ============================================================
+   Sort Your Music — Dark Theme (Spotify-inspired)
+   Overrides sp-bootstrap.min.css
+   ============================================================ */
+
+/* --- Base --- */
 html {
   position: relative;
   min-height: 100%;
 }
 
 body {
-  /* Margin bottom by footer height */
   margin-bottom: 28px;
   padding-top: 0;
-  /*background:rgb(129,175,177) !important;*/
+  background-color: #121212 !important;
+  color: #e1e1e1 !important;
 }
 
-#footer {
-  margin-top:10px;
-  width: 100%;
-  height: 18px;
+a {
+  color: #1db954;
+}
+a:hover, a:focus {
+  color: #1ed760;
 }
 
-#footer p {
-    font-size:12px;
+/* --- Navbar --- */
+.navbar-default {
+  background-color: #000 !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+.navbar-default .navbar-brand,
+.navbar-default .navbar-title {
+  color: #fff !important;
 }
 
-.sp-jumbotron-custom-inverse {
-  /*background-image: url(images/background.jpg);*/
-}
-
+/* --- Hero / Jumbotron --- */
 #main {
-    background-image: url(images/saxman.jpg);
-}   
-
-#playlists {
-    display:none;
-    font-size:18px;
+  background: linear-gradient(135deg, #1db954 0%, #121212 70%) !important;
+  background-image: none !important;
 }
 
-#single-playlist {
-    display:none;
-}
-
-
-@media screen and (min-width: 768px) {
-  .sp-jumbotron-custom {
-  }
-}
-
-
-.h1 {
-  margin-bottom: 42px; /* (@padding-base-vertical * 7) */
+.jumbotron {
+  background-color: #181818 !important;
+  color: #e1e1e1 !important;
 }
 
 .top {
-    margin-top:66px;
-    position:relative;
+  margin-top: 66px;
+  position: relative;
+}
+
+#jumbo-dialog {
+  color: white;
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 15px;
+  padding: 30px;
+}
+
+#ttitle {
+  color: white;
+}
+
+#ttext {
+  margin-top: 20px;
+  margin-bottom: 30px;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#info {
+  font-size: 32px;
+}
+
+/* --- Buttons (pill-shaped, Spotify style) --- */
+.btn-primary {
+  background-color: #1db954 !important;
+  border-color: #1db954 !important;
+  color: #fff !important;
+  border-radius: 500px !important;
+  transition: background-color 0.2s, transform 0.1s;
+}
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #1ed760 !important;
+  border-color: #1ed760 !important;
+  transform: scale(1.04);
+}
+.btn-primary:active {
+  background-color: #18a34a !important;
+  transform: scale(0.98);
+}
+.btn-primary[disabled],
+.btn-primary.disabled {
+  background-color: #535353 !important;
+  border-color: #535353 !important;
+  color: #b3b3b3 !important;
+  opacity: 0.65;
+  transform: none;
+}
+
+/* Override the btn-warning disabled styling used in setNeedsSave */
+.btn-warning {
+  background-color: #535353 !important;
+  border-color: #535353 !important;
+  color: #b3b3b3 !important;
+  border-radius: 500px !important;
+}
+
+.btn-sm {
+  border-radius: 500px !important;
+}
+
+/* Dropdown toggle match */
+.btn-group > .btn + .dropdown-toggle {
+  border-radius: 0 500px 500px 0 !important;
+}
+.btn-group > .btn:first-child:not(:last-child) {
+  border-radius: 500px 0 0 500px !important;
+}
+
+.dropdown-menu {
+  background-color: #282828;
+  border: 1px solid #3e3e3e;
+}
+.dropdown-menu > li > a {
+  color: #e1e1e1;
+}
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+  background-color: #3e3e3e;
+  color: #fff;
+}
+
+/* --- Panels --- */
+.panel {
+  background-color: #181818 !important;
+  border-color: #282828 !important;
+}
+.panel-default > .panel-heading {
+  background-color: #282828 !important;
+  border-color: #282828 !important;
+  color: #e1e1e1 !important;
+}
+.panel-body {
+  background-color: #181818 !important;
+  color: #e1e1e1 !important;
+}
+
+/* --- Form controls --- */
+.form-control {
+  background-color: #282828 !important;
+  border-color: #3e3e3e !important;
+  color: #e1e1e1 !important;
+}
+.form-control:focus {
+  border-color: #1db954 !important;
+  box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.25) !important;
+}
+label {
+  color: #b3b3b3;
+}
+
+#min-bpm, #max-bpm {
+  width: 100px;
+}
+
+/* --- Playlists section --- */
+#playlists {
+  display: none;
+  font-size: 18px;
+}
+
+#single-playlist {
+  display: none;
+}
+
+#playlist-list {
+  text-align: left;
+}
+#playlist-list th {
+  font-weight: bold;
+  color: #b3b3b3;
+  border-bottom: 1px solid #282828 !important;
+}
+
+/* Playlist list table */
+#playlist-list td {
+  border: none !important;
+  vertical-align: middle !important;
+  padding: 10px 8px;
+}
+#playlist-list tr {
+  border-bottom: 1px solid #282828;
+  transition: background-color 0.15s ease;
+}
+#playlist-list tbody tr:hover {
+  background-color: #282828 !important;
+}
+
+/* Playlist cover images */
+#playlist-list img {
+  width: 80px !important;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.table {
+  color: #e1e1e1 !important;
+  border-color: #282828 !important;
+}
+.table > thead > tr > th,
+.table > tbody > tr > td {
+  border-color: #282828 !important;
+}
+
+/* --- Song Data Table --- */
+#song-table {
+  width: 100%;
+  background-color: #181818 !important;
+  color: #e1e1e1 !important;
+}
+
+/* DataTables overrides */
+table.dataTable thead th,
+table.dataTable thead td {
+  border-bottom: 1px solid #3e3e3e !important;
+  color: #b3b3b3 !important;
+  background-color: transparent !important;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+table.dataTable.stripe tbody tr,
+table.dataTable.display tbody tr {
+  background-color: #181818 !important;
+}
+
+table.dataTable.stripe tbody tr.odd,
+table.dataTable.display tbody tr.odd {
+  background-color: #181818 !important;
+}
+
+table.dataTable.stripe tbody tr.even,
+table.dataTable.display tbody tr.even {
+  background-color: #181818 !important;
+}
+
+table.dataTable tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+table.dataTable.stripe tbody tr:hover,
+table.dataTable.display tbody tr:hover,
+table.dataTable tbody tr:hover {
+  background-color: #282828 !important;
+}
+
+table.dataTable tbody td {
+  border: none !important;
+  border-bottom: 1px solid #222 !important;
+  color: #e1e1e1 !important;
+  padding: 8px 10px !important;
+  font-feature-settings: "tnum";
+}
+
+/* Selected row: green left accent */
+table.dataTable tbody tr.selected,
+table.dataTable tbody tr.selected:hover {
+  background-color: #282828 !important;
+  box-shadow: inset 3px 0 0 #1db954;
+}
+table.dataTable tbody tr.selected td {
+  color: #fff !important;
+}
+
+/* DataTables sorting icons fix for dark bg */
+table.dataTable thead .sorting,
+table.dataTable thead .sorting_asc,
+table.dataTable thead .sorting_desc {
+  background-color: transparent !important;
+}
+
+/* Compact cell borders override */
+table.dataTable.cell-border tbody th,
+table.dataTable.cell-border tbody td {
+  border-top: none !important;
+  border-right: none !important;
+  border-left: none !important;
+}
+
+/* --- CSS Spinner (replaces ajaxSpinner.gif) --- */
+.spinner, .spinner2 {
+  display: none;
+  width: 48px;
+  height: 48px;
+  border: 4px solid #282828;
+  border-top-color: #1db954;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- Save button spinner (Font Awesome) --- */
+.has-spinner .fa-spinner {
+  opacity: 0;
+  max-width: 0;
+  transition: opacity 0.25s, max-width 0.45s;
+}
+
+.has-spinner.active {
+  cursor: progress;
+}
+
+.has-spinner.active .fa-spinner {
+  opacity: 1;
+  max-width: 50px;
+}
+
+/* --- Footer --- */
+#footer {
+  margin-top: 10px;
+  width: 100%;
+  height: 18px;
+}
+#footer p {
+  font-size: 12px;
+}
+#footer .text-muted {
+  color: #535353 !important;
+}
+#footer a {
+  color: #b3b3b3;
+}
+#footer a:hover {
+  color: #1db954;
+}
+
+/* --- Misc --- */
+.hoverable {
+  cursor: pointer;
+}
+.hoverable:hover {
+  color: #1db954 !important;
+}
+
+.h1 {
+  margin-bottom: 42px;
+}
+
+h3 {
+  font-weight: 600;
+  margin-top: 12px;
+}
+
+h2 {
+  color: #fff;
+}
+
+p {
+  margin-bottom: 18px;
+}
+
+@media screen and (min-width: 992px) {
+  p {
+    margin-bottom: 12px;
+  }
 }
 
 img {
   margin: 0 auto;
 }
 
-h3 {
-  font-weight: 600; /* @font-weight-semibold */
-  margin-top: 12px;
-}
-
-
-p {
-  margin-bottom: 18px; /* a little more breathing room between feature tiles in mobile
-view) */
-}
-
-@media screen and (min-width: 992px) {
-  p {
-    margin-bottom: 12px; /* reset to default */
-  }
-}
-
-#info {
-    font-size:32px;
-}
-
-#song-table {
-  width:100%;
-  background-color:#ffffff;
-}
-
 .fine-print {
-  margin-bottom: 30px; /* (@padding-base-vertical * 5) */
+  margin-bottom: 30px;
 }
 
 #go {
-    margin-bottom:20px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  padding: 12px 40px;
 }
 
-
-#ttext {
-    margin-top:20px;
-    margin-bottom:30px;
-    width: 80%;
-    margin-left:auto;
-    margin-right:auto;
-
+/* Features section */
+.features {
+  color: #b3b3b3;
+}
+.features b {
+  color: #e1e1e1;
+}
+.features ol {
+  color: #b3b3b3;
 }
 
-#ttitle {
-    color:white;
+/* Text colors */
+.text-muted {
+  color: #535353 !important;
 }
 
-#jumbo-dialog {
-    color:white;
-    background: rgba(50,50,50, 0.3);
-    border-radius:15px;
+/* Make text-center headings white */
+.text-center {
+  color: #fff;
 }
 
-
-.hoverable {
-    cursor: pointer;
+/* Remove sp-bootstrap jumbotron background image */
+.sp-jumbotron-custom-inverse {
+  background-image: none !important;
 }
 
-#playlist-list {
-  text-align: left
-}
-#playlist-list th {
-  font-weight: bold
-}
-
-#min-bpm,#max-bpm {
-  width:100px;
-}
-
-/* Loading spinner based on following stackoverflow answer:
-    http://stackoverflow.com/questions/15982233/spinner-for-twitter-bootstrap-btn 
-    http://jsfiddle.net/oshybystyi/v04ag5ch/4/ */
-
-.has-spinner .fa-spinner {
-  opacity: 0;
-  max-width: 0;
-
-  -webkit-transition: opacity 0.25s, max-width 0.45s; 
-  -moz-transition: opacity 0.25s, max-width 0.45s;
-  -o-transition: opacity 0.25s, max-width 0.45s;
-  transition: opacity 0.25s, max-width 0.45s; /* Duration fixed since we animate additional hidden width */
-}
-
-.has-spinner.active {
-  cursor:progress;
-}
-
-.has-spinner.active .fa-spinner {
-  opacity: 1;
-  max-width: 50px; /* More than it will ever come, notice that this affects on animation duration */
+/* Prompt heading */
+.prompt {
+  color: #fff;
 }
