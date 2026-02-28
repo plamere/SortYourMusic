@@ -303,27 +303,74 @@ function info(msg) {
     $("#info").text(msg);
 }
 
-function authorizeUser() {
-    var scopes = 'playlist-read-private playlist-modify-private playlist-modify-public';
-
-    var url = 'https://accounts.spotify.com/authorize?client_id=' + SPOTIFY_CLIENT_ID +
-        '&response_type=token' +
-        '&scope=' + encodeURIComponent(scopes) +
-        '&redirect_uri=' + encodeURIComponent(SPOTIFY_REDIRECT_URI);
-    document.location = url;
+// PKCE helpers
+function generateRandomString(length) {
+    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var values = crypto.getRandomValues(new Uint8Array(length));
+    return Array.from(values).reduce(function(acc, x) { return acc + possible[x % possible.length]; }, "");
 }
 
-function parseArgs() {
-    var hash = location.hash.replace(/#/g, '');
-    var all = hash.split('&');
-    var args = {};
-    _.each(all, function(keyvalue) {
-        var kv = keyvalue.split('=');
-        var key = kv[0];
-        var val = kv[1];
-        args[key] = val;
+function sha256(plain) {
+    var encoder = new TextEncoder();
+    var data = encoder.encode(plain);
+    return window.crypto.subtle.digest('SHA-256', data);
+}
+
+function base64encode(input) {
+    return btoa(String.fromCharCode.apply(null, new Uint8Array(input)))
+        .replace(/=/g, '')
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_');
+}
+
+async function authorizeUser() {
+    var scopes = 'playlist-read-private playlist-modify-private playlist-modify-public';
+    var codeVerifier = generateRandomString(64);
+    window.localStorage.setItem('code_verifier', codeVerifier);
+
+    var hashed = await sha256(codeVerifier);
+    var codeChallenge = base64encode(hashed);
+
+    var authUrl = 'https://accounts.spotify.com/authorize?' +
+        'client_id=' + encodeURIComponent(SPOTIFY_CLIENT_ID) +
+        '&response_type=code' +
+        '&scope=' + encodeURIComponent(scopes) +
+        '&redirect_uri=' + encodeURIComponent(SPOTIFY_REDIRECT_URI) +
+        '&code_challenge_method=S256' +
+        '&code_challenge=' + encodeURIComponent(codeChallenge);
+
+    document.location = authUrl;
+}
+
+function exchangeCodeForToken(code) {
+    var codeVerifier = window.localStorage.getItem('code_verifier');
+    return $.ajax('https://accounts.spotify.com/api/token', {
+        type: 'POST',
+        data: $.param({
+            client_id: SPOTIFY_CLIENT_ID,
+            grant_type: 'authorization_code',
+            code: code,
+            redirect_uri: SPOTIFY_REDIRECT_URI,
+            code_verifier: codeVerifier
+        }),
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
     });
-    return args;
+}
+
+function refreshAccessToken(refreshToken) {
+    return $.ajax('https://accounts.spotify.com/api/token', {
+        type: 'POST',
+        data: $.param({
+            client_id: SPOTIFY_CLIENT_ID,
+            grant_type: 'refresh_token',
+            refresh_token: refreshToken
+        }),
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    });
 }
 
 function callSpotify(type, url, json, callback) {
@@ -1022,26 +1069,37 @@ $(document).ready(
 
     function() {
         songTable = initTable();
-        var args = parseArgs();
 
+        var urlParams = new URLSearchParams(window.location.search);
+        var code = urlParams.get('code');
+        var authError = urlParams.get('error');
 
-        if ('error' in args) {
+        if (authError) {
             error("Sorry, I can't read your playlists from Spotify without authorization");
             $("#go").show();
             $("#go").on('click', function() {
                 authorizeUser();
             });
-        } else if ('access_token' in args) {
-            accessToken = args['access_token'];
+        } else if (code) {
+            // Clean the URL so the code isn't visible/reusable
+            window.history.replaceState({}, document.title, window.location.pathname);
             $(".worker").hide();
-            fetchCurrentUserProfile(function(user) {
-                if (user) {
-                    curUserID = user.id;
-                    $("#who").text(user.id);
-                    loadPlaylists(user.id);
-                } else {
-                    error("Trouble getting the user profile");
+            exchangeCodeForToken(code).then(function(response) {
+                accessToken = response.access_token;
+                if (response.refresh_token) {
+                    window.localStorage.setItem('refresh_token', response.refresh_token);
                 }
+                fetchCurrentUserProfile(function(user) {
+                    if (user) {
+                        curUserID = user.id;
+                        $("#who").text(user.id);
+                        loadPlaylists(user.id);
+                    } else {
+                        error("Trouble getting the user profile");
+                    }
+                });
+            }).fail(function() {
+                error("Failed to exchange authorization code for token");
             });
         } else {
             $("#go").show();
