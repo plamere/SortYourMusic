@@ -14,6 +14,7 @@ body {
   padding-top: 0;
   background-color: #121212 !important;
   color: #e1e1e1 !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
 }
 
 a {
@@ -417,4 +418,76 @@ img {
 /* Prompt heading */
 .prompt {
   color: #fff;
+}
+
+/* --- View transitions --- */
+.worker {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Custom checkbox --- */
+.checkbox-custom label {
+  position: relative;
+  padding-left: 28px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-custom input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checkbox-custom .checkbox-indicator {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  background-color: #282828;
+  border: 2px solid #3e3e3e;
+  border-radius: 3px;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.checkbox-custom input[type="checkbox"]:checked + .checkbox-indicator {
+  background-color: #1db954;
+  border-color: #1db954;
+}
+
+.checkbox-custom input[type="checkbox"]:checked + .checkbox-indicator::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.checkbox-custom input[type="checkbox"]:focus + .checkbox-indicator {
+  box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.25);
+}
+
+/* --- FAQ list --- */
+.faq-list {
+  list-style: none;
+  padding-left: 0;
+}
+.faq-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid #282828;
+}
+.faq-list li:last-child {
+  border-bottom: none;
 }

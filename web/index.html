@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231db954'/><text x='50' y='72' font-size='60' text-anchor='middle' fill='white'>&#9835;</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.13.1/datatables.min.css"/>
     <link href="dist/sp-bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
@@ -47,86 +49,27 @@
           </div>
       </div>
 
-        <div class="container worker ">
+        <div class="container worker">
           <div class="row features">
              <div class="col-md-offset-2 col-md-8">
-                    <h2 class="text-center">Get your playlists in order</h2>
-                    <p>
-                    With <b> Sort Your Playlists </b> you can easily order the songs
-                    in any of your playlists be a wide range of parameters. Just
-                    follow these steps:
-                    </p>
+                    <h2 class="text-center">How it works</h2>
                     <ol>
-                        <li> <b> Login </b> with your Spotify credentials 
-                        <li> <b> Pick </b> your playlist
-                        <li> <b> Sort </b> the playlist by clicking on the column headings in
-                        the playlist table
-                        <li>  <b> Save </b> the sorted playlist to Spotify
+                        <li><b>Login</b> with your Spotify account</li>
+                        <li><b>Pick</b> a playlist</li>
+                        <li><b>Sort</b> by clicking column headers (BPM, energy, danceability, valence, and more)</li>
+                        <li><b>Save</b> the new order back to Spotify</li>
                     </ol>
 
-                    <h2 class="text-center">Tap into the power of Spotify's song attributes</h2>
-                    <p>
-                    <b> Sort Your Music </b> lets you sort your playlist
-                    based on a number of Spotify's song attributes including:
-                    </p>
-
-                    <ol>
-                        <li> <b> Beats Per Minute (BPM)</b> - The tempo of the
-                        song.
-                        <li> <b> Energy</b> - The energy of a song - the higher
-                        the value, the more energtic.
-                        song
-                        <li> <b> Danceability</b> - The higher the value, the
-                        easier it is to dance to this song.
-                        <li> <b> Loudness </b> - The higher the value, the
-                        louder the song.
-                        <li> <b> Valence </b> - The higher the value, the
-                        more positive mood for the song.
-                        <li> <b> Length </b> - The duration of the song.
-                        <li> <b> Acoustic </b> - The higher the value the more
-                        acoustic the song is.
-                        <li> <b> Popularity </b> - The higher the value the more
-                        popular the song is.
-                        <li> <b> A.Sep </b> - maximizes the artist separation in the set
-                        <li> <b> Rnd </b> - A randon number. Sort by this column to shuffle your playlist.
-                    </ol>
+                    <h2 class="text-center">Available attributes</h2>
+                    <p>Sort by <b>BPM</b>, <b>Energy</b>, <b>Danceability</b>, <b>Loudness</b>, <b>Valence</b>, <b>Length</b>, <b>Acousticness</b>, <b>Popularity</b>, <b>Artist Separation</b>, or <b>Shuffle</b> (random). Use the BPM filter to narrow results.</p>
 
                     <h2 class="text-center">FAQ</h2>
-                    <p>
-                        Here are some answers to questions about <b> Sort Your
-                        Music </b>
-                    </p>
-                    <ol>
-                        <li> <b> How was this built? </b> This was created using
-                        the <a
-                        href="http://developer.spotify.com">Spotify</a> API.
-
-                        <li> <b> Where can I learn more about the Spotify song
-                        attributes?</b> See <a
-                        href="https://developer.spotify.com/documentation/web-api/reference/#/operations/get-audio-analysis">
-                        Acoustic Attributes Overview </a>
-                        <li> <b> Can you add more attributes to the app?  </b>
-                        Yes, but it is a tradeoff between display space,
-                        complexity and utility. Let me know which attributes
-                        you'd like to see.
-                        <li> <b> Any more features planned?</b> - Yes, I'd like
-                        to add a few more features such as:
-                            <ul>
-                                <li> Duplicate track removal
-                                <li> Manual reordering, addition, and deletion.
-                            </ul>
-                        If you have any ideas for new feature, let me know.
-                        <li> <b> Is the source available</b> - Yes, you can find
-                        it on <a href="https://github.com/plamere/SortYourMusic">github</a>
-                        <li> <b> Does Sort Your Music overwrite my playlist when
-                            I save?</b> - 
-                            Only if you chose the 'Overwrite playlist option' otherwise
-                            it creates a copy of the playlist. The new
-                            playlist is called 'Old playlist name sorted by
-                            increasing X', where X is what you sorted the
-                            playlist on. 
-                    </ol>
-              </div> 
+                    <ul class="faq-list">
+                        <li><b>Does it overwrite my playlist?</b> Only if you choose "Overwrite Playlist." Otherwise it creates a new copy.</li>
+                        <li><b>How was this built?</b> Using the <a href="https://developer.spotify.com">Spotify Web API</a>.</li>
+                        <li><b>Is the source available?</b> Yes, on <a href="https://github.com/plamere/SortYourMusic">GitHub</a>.</li>
+                    </ul>
+              </div>
           </div>
         </div>
 
@@ -189,9 +132,12 @@
                                     <label for="max-bpm">Maximum:</label>
                                     <input id="max-bpm" type="number" class="form-control" placeholder="1000">
                                 </div>
-                                <div class="form-group">
-                                    <label for="include-double">Include doubled BPM</label>
-                                    <input id="include-double" type="checkbox" checked="checked">
+                                <div class="form-group checkbox-custom">
+                                    <label for="include-double">
+                                        <input id="include-double" type="checkbox" checked="checked">
+                                        <span class="checkbox-indicator"></span>
+                                        Include doubled BPM
+                                    </label>
                                 </div>
                                  <!--
                                  <button id="shuffle-button" class="pull-right btn btn-primary btn-sm">Shuffle</button> 
