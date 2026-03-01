@@ -6,6 +6,18 @@ export function renderFaq(container) {
   const faq = el('div', { class: 'faq-view container' },
     el('h2', { class: 'faq-title' }, 'FAQ'),
 
+    faqItem('What does it look like?', null, [
+      el('p', {}, 'Here\u2019s what you\u2019ll see after logging in and selecting a playlist:'),
+      el('a', { href: 'img/faq-screenshot.png', target: '_blank' },
+        el('img', {
+          src: 'img/faq-screenshot.png',
+          alt: 'Screenshot of Sort Your Music showing a playlist sorted by BPM',
+          class: 'faq-screenshot',
+        })
+      ),
+      el('p', { class: 'faq-screenshot-hint' }, 'Click to enlarge'),
+    ], true),
+
     faqItem('How does it work?',
       'Login with Spotify, pick a playlist, click any column header to sort, then save the new order back to Spotify.'),
 
@@ -14,6 +26,42 @@ export function renderFaq(container) {
 
     faqItem('Is my data safe?',
       'Sort Your Music runs entirely in your browser. Your Spotify credentials are never sent to our server \u2014 authentication uses Spotify\'s own OAuth flow.'),
+
+    faqItem('Privacy Policy', null, [
+      el('p', {}, 'Sort Your Music is a client-side web application. There is no server, no database, and no analytics. Nothing leaves your browser.'),
+
+      el('h4', {}, 'What we access'),
+      el('p', {}, 'When you log in, Sort Your Music requests the following Spotify OAuth scopes:'),
+      el('dl', { class: 'faq-defs' },
+        dt('playlist-read-private'), dd('Read your public and private playlists.'),
+        dt('playlist-modify-public'), dd('Reorder or save tracks in your public playlists.'),
+        dt('playlist-modify-private'), dd('Reorder or save tracks in your private playlists.'),
+      ),
+      el('p', {}, 'We use these scopes to display your playlists, fetch track audio features (BPM, energy, etc.), and save reordered playlists back to Spotify. We do not access your email, profile details, listening history, or any other Spotify data.'),
+
+      el('h4', {}, 'Data storage'),
+      el('p', {}, 'Your Spotify access token is stored in sessionStorage, which is automatically cleared when you close the browser tab. Logging out also clears the token immediately. No cookies, local storage, or server-side storage are used.'),
+
+      el('h4', {}, 'Data sharing'),
+      el('p', {}, 'We do not share, sell, or transmit your data to any third party. There is no advertising, no tracking, and no analytics on this site.'),
+
+      el('h4', {}, 'Your control'),
+      el('p', {},
+        'You can log out at any time to clear your session. To fully revoke access, visit your ',
+      ),
+      el('a', { href: 'https://www.spotify.com/account/apps/', target: '_blank' }, 'Spotify Apps page'),
+      ' and remove Sort Your Music.',
+
+      el('h4', {}, 'Children'),
+      el('p', {}, 'Sort Your Music is not directed at children under the age of 13. We do not knowingly collect information from children.'),
+
+      el('h4', {}, 'Spotify\'s privacy policy'),
+      el('p', {},
+        'Your use of Spotify is also governed by ',
+      ),
+      el('a', { href: 'https://www.spotify.com/legal/privacy-policy/', target: '_blank' }, 'Spotify\'s Privacy Policy'),
+      '.',
+    ]),
 
     faqItem('What do the playlist categories mean?', null, [
       el('dl', { class: 'faq-defs' },
@@ -90,7 +138,7 @@ function dd(text) {
   return el('dd', {}, text);
 }
 
-function faqItem(question, answerText, answerNodes) {
+function faqItem(question, answerText, answerNodes, open = false) {
   const answer = el('div', { class: 'faq-answer' });
   if (answerNodes) {
     for (const node of answerNodes) {
@@ -100,7 +148,10 @@ function faqItem(question, answerText, answerNodes) {
     answer.textContent = answerText;
   }
 
-  return el('details', { class: 'faq-item' },
+  const attrs = { class: 'faq-item' };
+  if (open) attrs.open = '';
+
+  return el('details', attrs,
     el('summary', {}, question),
     answer
   );

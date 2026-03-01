@@ -129,6 +129,20 @@
   color: var(--color-accent);
 }
 
+.faq-screenshot {
+  width: 100%;
+  border-radius: var(--radius-md);
+  margin-top: var(--space-sm);
+  cursor: pointer;
+}
+
+.faq-screenshot-hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+  margin-top: var(--space-xs);
+}
+
 .faq-defs {
   margin: 0;
 }

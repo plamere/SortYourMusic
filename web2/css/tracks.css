@@ -102,10 +102,10 @@
 }
 
 /* Column widths */
-.track-table colgroup .col-order    { width: 32px; }
+.track-table colgroup .col-order    { width: 40px; }
 .track-table colgroup .col-title    { width: auto; }
 .track-table colgroup .col-artist   { width: 12%; }
-.track-table colgroup .col-release  { width: 90px; }
+.track-table colgroup .col-release  { width: 100px; }
 .track-table colgroup .col-num      { min-width: 56px; width: 66px; }
 
 .track-table thead th {
