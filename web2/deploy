@@ -1,13 +1,2 @@
 #!/bin/bash
-# Deploy web2/ to S3
-set -euo pipefail
-
-BUCKET="s3://sortyourmusic.playlistmachinery.com"
-
-echo "Deploying web2/ to $BUCKET ..."
-s3cmd sync --acl-public --delete-removed \
-  --exclude '.DS_Store' \
-  --exclude 'deploy' \
-  ./ "$BUCKET/"
-
-echo "Done."
+rsync -azv . root@50.116.51.150:/home/www/sortyourmusic/

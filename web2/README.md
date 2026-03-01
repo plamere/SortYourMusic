@@ -45,4 +45,4 @@ Open `http://localhost:3000` and log in with Spotify.
 ./deploy
 ```
 
-Syncs the directory to S3 via `s3cmd`.
+Rsyncs the directory to the production server.

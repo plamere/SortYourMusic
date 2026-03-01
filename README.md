@@ -44,5 +44,5 @@ Each version has its own deploy script:
 
 ```sh
 cd web && ./deploy    # rsyncs to production server
-cd web2 && ./deploy   # syncs to S3
+cd web2 && ./deploy   # rsyncs to production server
 ```
