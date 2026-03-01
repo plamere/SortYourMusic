@@ -5,10 +5,6 @@ Sort your Spotify playlists by tempo, energy, danceability, and more. Pick a pla
 
 Live at [sortyourmusic.playlistmachinery.com](https://sortyourmusic.playlistmachinery.com/)
 
-## Note
-
-This app was originally written around 2012 and the tech reflects that era — jQuery, Bootstrap 3, inline JS, no build system. It still works and does its job, but don't look to it as a model of modern web development.
-
 ## Sortable Attributes
 
 | Attribute | Description |
@@ -26,23 +22,14 @@ This app was originally written around 2012 and the tech reflects that era — j
 
 A BPM filter lets you narrow results to a specific tempo range, with an option to include doubled BPM values.
 
-## Local Development
+## Versions
 
-No build step, bundler, or package manager. The app is a single-page static site.
+There are two versions of the app in this repo:
 
-1. Clone the repo
-2. Copy `web/config.js` and set your Spotify app credentials:
-   ```js
-   var SPOTIFY_CLIENT_ID = 'your-client-id';
-   var SPOTIFY_REDIRECT_URI = 'http://localhost:8000/';
-   ```
-3. Serve the `web/` directory with any static file server:
-   ```sh
-   cd web && python3 -m http.server 8000
-   ```
-4. Open `http://localhost:8000` and log in with Spotify
+- **[`web/`](web/)** — The original version (~2012). jQuery, Bootstrap 3, everything inline in one file. See [`web/README.md`](web/README.md).
+- **[`web2/`](web2/)** — Modern rewrite (2026). Vanilla ES modules, modular file structure, no framework. See [`web2/README.md`](web2/README.md).
 
-### Spotify App Setup
+## Spotify App Setup
 
 Create an app at [developer.spotify.com/dashboard](https://developer.spotify.com/dashboard) with the following settings:
 
@@ -53,28 +40,9 @@ Authentication uses the Authorization Code + PKCE flow (no client secret needed)
 
 ## Deploy
 
+Each version has its own deploy script:
+
 ```sh
-cd web && ./deploy
+cd web && ./deploy    # rsyncs to production server
+cd web2 && ./deploy   # syncs to S3
 ```
-
-This rsyncs the `web/` directory to the production server.
-
-## Tech Stack
-
-- Vanilla JavaScript (no build step)
-- jQuery 1.11, Bootstrap 3, Underscore.js
-- [DataTables](https://datatables.net/) for sortable columns
-- [Q.js](https://github.com/kriskowal/q) for promises
-- Spotify Web API for playlist and audio feature data
-
-## Architecture
-
-All application code lives in `web/index.html` (HTML + inline JS). Key files:
-
-| File | Purpose |
-|------|---------|
-| `web/index.html` | Entire app: markup, styles, and all JS logic |
-| `web/config.js` | Spotify OAuth client ID and redirect URI |
-| `web/styles.css` | Dark theme and custom styling |
-| `web/lib/` | Vendored JS libraries |
-| `web/dist/` | Bootstrap CSS and fonts |
