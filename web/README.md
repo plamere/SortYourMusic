@@ -26,7 +26,7 @@ The original version of Sort Your Music, written around 2012. All application co
 cd web && python3 -m http.server 8000
 ```
 
-Open `http://localhost:8000` and log in with Spotify.
+Open `http://127.0.0.1:8000` and log in with Spotify.
 
 ## Deploy
 

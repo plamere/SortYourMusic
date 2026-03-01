@@ -32,12 +32,12 @@ A 2026 rewrite of Sort Your Music. Vanilla ES modules, CSS custom properties, no
 ## Local Dev
 
 ```sh
-npx serve .
+npx serve -l 8000
 ```
 
 Don't use `python3 -m http.server` — its single-threaded nature causes `ERR_SOCKET_NOT_CONNECTED` errors when loading many ES modules concurrently.
 
-Open `http://localhost:3000` and log in with Spotify.
+Open `http://127.0.0.1:8000` and log in with Spotify.
 
 ## Deploy
 
