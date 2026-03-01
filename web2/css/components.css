@@ -1,0 +1,254 @@
+/* Buttons, inputs, checkboxes, dropdowns, spinners */
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-pill);
+  transition: background-color var(--transition-base), transform 0.1s;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.btn--primary {
+  background-color: var(--color-accent);
+  color: var(--color-text-white);
+}
+
+.btn--primary:hover {
+  background-color: var(--color-accent-hover);
+  color: var(--color-text-white);
+  transform: scale(1.04);
+}
+
+.btn--primary:active {
+  background-color: var(--color-accent-active);
+  transform: scale(0.98);
+}
+
+.btn--primary:disabled,
+.btn--primary.disabled {
+  background-color: var(--color-text-muted);
+  color: var(--color-text-secondary);
+  opacity: 0.65;
+  transform: none;
+  cursor: not-allowed;
+}
+
+.btn--lg {
+  padding: 12px 40px;
+  font-size: var(--font-size-base);
+}
+
+.btn--sm {
+  padding: var(--space-xs) var(--space-md);
+  font-size: var(--font-size-xs);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.btn--ghost:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-text-secondary);
+}
+
+/* Button group (split button) */
+.btn-group {
+  display: inline-flex;
+  position: relative;
+}
+
+.btn-group .btn:first-child {
+  border-radius: var(--radius-pill) 0 0 var(--radius-pill);
+}
+
+.btn-group .btn:nth-child(2) {
+  border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
+  padding-inline: var(--space-sm);
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Dropdown */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 50;
+  min-width: 180px;
+  margin-top: var(--space-xs);
+  padding: var(--space-xs) 0;
+  background-color: var(--color-surface-overlay);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  display: none;
+}
+
+.dropdown-menu.open {
+  display: block;
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: var(--space-sm) var(--space-md);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  transition: background-color var(--transition-fast);
+}
+
+.dropdown-menu a:hover {
+  background-color: var(--color-border);
+  color: var(--color-text-white);
+}
+
+/* Caret */
+.caret {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid currentColor;
+  vertical-align: middle;
+}
+
+/* Form controls */
+.form-input {
+  background-color: var(--color-surface-overlay);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-sm);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-accent-glow);
+}
+
+.form-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.form-label {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.form-inline {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+/* Custom checkbox */
+.checkbox-custom {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  gap: var(--space-sm);
+}
+
+.checkbox-custom input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checkbox-indicator {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  background-color: var(--color-surface-overlay);
+  border: 2px solid var(--color-border);
+  border-radius: 3px;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+input[type="checkbox"]:checked + .checkbox-indicator {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+input[type="checkbox"]:checked + .checkbox-indicator::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid var(--color-text-white);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+input[type="checkbox"]:focus + .checkbox-indicator {
+  box-shadow: 0 0 0 2px var(--color-accent-glow);
+}
+
+.checkbox-label {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+/* Spinner */
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--color-surface-overlay);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.spinner--inline {
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
+}
+
+.spinner-center {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-xl);
+}
+
+/* Save button spinner */
+.btn .spinner--inline {
+  display: none;
+}
+
+.btn.saving .spinner--inline {
+  display: inline-block;
+}
+
+.btn.saved {
+  background-color: var(--color-success, #1db954);
+}

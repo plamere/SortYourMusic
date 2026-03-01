@@ -1,0 +1,226 @@
+/* Track table styles */
+
+.tracks-view {
+  padding: var(--space-xl) 0 var(--space-3xl);
+}
+
+.playlist-header {
+  display: flex;
+  gap: var(--space-lg);
+  align-items: flex-start;
+  margin-bottom: var(--space-lg);
+}
+
+.playlist-header-image {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.playlist-header-info {
+  min-width: 0;
+}
+
+.track-title {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  margin-bottom: var(--space-xs);
+}
+
+.track-title a {
+  color: var(--color-text-white);
+  transition: color var(--transition-fast);
+}
+
+.track-title a:hover {
+  color: var(--color-accent);
+}
+
+/* Playlist metadata */
+
+.playlist-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-sm);
+}
+
+.playlist-meta-sep {
+  color: var(--color-text-muted);
+  opacity: 0.5;
+}
+
+.playlist-tag {
+  font-size: var(--font-size-xs);
+  padding: 1px var(--space-xs);
+  border-radius: var(--radius-full, 9999px);
+  background: var(--color-surface-overlay);
+  color: var(--color-text-secondary);
+}
+
+.playlist-description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin-bottom: var(--space-lg);
+  max-width: 60ch;
+}
+
+/* Toolbar */
+.track-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+/* Filter bar */
+.filter-bar {
+  background: var(--color-surface-raised);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+/* Table wrapper for horizontal scroll on mobile */
+.track-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Table */
+.track-table {
+  width: 100%;
+  table-layout: fixed;
+  background: var(--color-surface-raised);
+  border-radius: var(--radius-md);
+}
+
+/* Column widths */
+.track-table colgroup .col-order    { width: 32px; }
+.track-table colgroup .col-title    { width: auto; }
+.track-table colgroup .col-artist   { width: 12%; }
+.track-table colgroup .col-release  { width: 90px; }
+.track-table colgroup .col-num      { min-width: 56px; width: 66px; }
+
+.track-table thead th {
+  background: var(--color-surface-raised);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: var(--space-xs) var(--space-sm);
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: color var(--transition-fast);
+}
+
+.track-table thead th:hover {
+  color: var(--color-text-primary);
+}
+
+/* Sort arrows */
+.track-table thead th::after {
+  content: '';
+  display: inline-block;
+  margin-left: 4px;
+  opacity: 0.3;
+}
+
+.track-table thead th.sort-asc::after {
+  content: '\25B2';
+  opacity: 1;
+  color: var(--color-accent);
+  font-size: 8px;
+}
+
+.track-table thead th.sort-desc::after {
+  content: '\25BC';
+  opacity: 1;
+  color: var(--color-accent);
+  font-size: 8px;
+}
+
+/* Table body */
+.track-table tbody tr {
+  transition: background-color var(--transition-fast);
+  cursor: pointer;
+}
+
+.track-table tbody tr:hover {
+  background-color: var(--color-surface-overlay);
+}
+
+.track-table tbody tr.playing {
+  background-color: var(--color-surface-overlay);
+  box-shadow: inset 3px 0 0 var(--color-accent);
+}
+
+.track-table tbody tr.playing td {
+  color: var(--color-text-white);
+}
+
+.track-table tbody tr.episode td {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.track-table tbody td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: var(--color-text-primary);
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Title and Artist columns can wrap */
+.track-table tbody td.col-text {
+  white-space: normal;
+  word-break: break-word;
+  text-overflow: unset;
+}
+
+.track-table tbody td.num {
+  font-feature-settings: "tnum";
+  text-align: right;
+}
+
+/* First column (order #) muted */
+.track-table tbody td:first-child {
+  color: var(--color-text-muted);
+}
+
+/* Empty playlist message */
+.empty-message {
+  text-align: center;
+  padding: var(--space-3xl) var(--space-lg);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
+}
+
+.empty-message p {
+  margin-bottom: var(--space-lg);
+}
+
+@media (max-width: 768px) {
+  .track-toolbar {
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .filter-bar .form-inline {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

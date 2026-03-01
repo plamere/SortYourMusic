@@ -1,0 +1,63 @@
+/* Design tokens */
+:root {
+  /* Colors */
+  --color-base: #0a0a0a;
+  --color-surface: #121212;
+  --color-surface-raised: #181818;
+  --color-surface-overlay: #282828;
+  --color-border: #3e3e3e;
+  --color-border-subtle: #282828;
+
+  --color-text-primary: #e1e1e1;
+  --color-text-secondary: #b3b3b3;
+  --color-text-muted: #535353;
+  --color-text-white: #fff;
+
+  --color-accent: #1db954;
+  --color-accent-hover: #1ed760;
+  --color-accent-active: #18a34a;
+  --color-accent-glow: rgba(29, 185, 84, 0.25);
+
+  --color-danger: #e74c3c;
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+
+  /* Typography */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-size-xs: clamp(0.625rem, 0.6rem + 0.1vw, 0.6875rem);
+  --font-size-sm: clamp(0.75rem, 0.7rem + 0.2vw, 0.8125rem);
+  --font-size-base: clamp(0.875rem, 0.85rem + 0.15vw, 1rem);
+  --font-size-lg: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --font-size-xl: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+  --font-size-2xl: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  --font-size-3xl: clamp(2rem, 1.5rem + 1.5vw, 2.75rem);
+
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-pill: 500px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
+
+  /* Layout */
+  --nav-height: 56px;
+  --container-max: 1200px;
+  --container-narrow: 800px;
+}
