@@ -1,14 +1,14 @@
-import { hasValidToken, exchangeCodeForToken, getAccessToken } from './auth.js';
+import { hasValidToken, exchangeCodeForToken, getAccessToken, clearTokens } from './auth.js';
 import { getCurrentUser } from './api.js';
 import { getState, setState, subscribe } from './state.js';
 import { qs } from './utils/dom.js';
 import { renderLanding } from './views/landing.js';
-import { renderPlaylists } from './views/playlists.js';
+import { renderPlaylists, invalidatePlaylistCache } from './views/playlists.js';
 import { renderTracks } from './views/tracks.js';
 import { renderFaq } from './views/faq.js';
 
 // View containers
-let landingEl, playlistsEl, tracksEl, faqEl, infoEl;
+let landingEl, playlistsEl, tracksEl, faqEl, infoEl, logoutLink;
 
 // Track last selected playlist so popstate can restore it
 let lastPlaylist = null;
@@ -38,6 +38,7 @@ async function initApp() {
   tracksEl = qs('#view-tracks');
   faqEl = qs('#view-faq');
   infoEl = qs('#info-bar');
+  logoutLink = qs('#logout-link');
 
   subscribe(updateInfo);
 
@@ -94,6 +95,7 @@ async function initApp() {
     try {
       const user = await getCurrentUser();
       setState({ user });
+      if (logoutLink) logoutLink.style.display = '';
       enterPlaylistsView(false);
       history.replaceState({ view: 'playlists' }, '', null);
     } catch {
@@ -130,6 +132,21 @@ async function initApp() {
       renderFaq(faqEl);
       showView('faq');
       pushState('faq');
+    });
+  }
+
+  // Wire logout link
+  if (logoutLink) {
+    logoutLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      clearTokens();
+      invalidatePlaylistCache();
+      setState({ user: null, playlists: [], info: '' });
+      lastPlaylist = null;
+      logoutLink.style.display = 'none';
+      renderLanding(landingEl);
+      showView('landing');
+      pushState('landing');
     });
   }
 }

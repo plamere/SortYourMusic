@@ -51,16 +51,29 @@ export async function renderPlaylists(container, onSelectPlaylist) {
   const filterSelect = el('select', {
     class: 'playlist-filter-select',
     on: {
-      change: () => applyFilter(grid, filterSelect.value),
+      change: () => applyFilter(grid, filterSelect.value, searchInput.value, matchCount),
     }
   });
   for (const { key, label } of FILTERS) {
     filterSelect.appendChild(el('option', { value: key }, label));
   }
 
+  const searchInput = el('input', {
+    class: 'playlist-search',
+    type: 'text',
+    placeholder: 'Filter by name\u2026',
+    on: {
+      input: () => applyFilter(grid, filterSelect.value, searchInput.value, matchCount),
+    }
+  });
+
+  const matchCount = el('span', { class: 'playlist-match-count' });
+
   const filterBar = el('div', { class: 'playlist-filters' },
     el('label', { class: 'playlist-filter-label' }, 'Show:'),
-    filterSelect
+    filterSelect,
+    searchInput,
+    matchCount
   );
 
   const grid = el('div', { class: 'playlist-grid' });
@@ -105,7 +118,7 @@ export async function renderPlaylists(container, onSelectPlaylist) {
       // Only append new cards since last render
       const newItems = batch.slice(renderedCount);
       appendCards(grid, newItems, wrappedOnSelect, userId, counts);
-      applyFilter(grid, filterSelect.value);
+      applyFilter(grid, filterSelect.value, searchInput.value, matchCount);
       renderedCount = batch.length;
     }, { signal });
 
@@ -125,15 +138,24 @@ export async function renderPlaylists(container, onSelectPlaylist) {
   }
 }
 
-function applyFilter(grid, filterKey) {
-  for (const card of grid.querySelectorAll('.playlist-card')) {
-    if (filterKey === 'all') {
-      card.style.display = '';
-    } else if (filterKey === 'collaborative') {
-      card.style.display = card.dataset.collab ? '' : 'none';
-    } else {
-      card.style.display = card.dataset.category === filterKey ? '' : 'none';
-    }
+function applyFilter(grid, filterKey, searchText, matchCountEl) {
+  const query = (searchText || '').toLowerCase();
+  const cards = grid.querySelectorAll('.playlist-card');
+  let visible = 0;
+  for (const card of cards) {
+    let catOk;
+    if (filterKey === 'all') catOk = true;
+    else if (filterKey === 'collaborative') catOk = !!card.dataset.collab;
+    else catOk = card.dataset.category === filterKey;
+
+    const nameOk = !query || card.dataset.name.includes(query);
+    const show = catOk && nameOk;
+    card.style.display = show ? '' : 'none';
+    if (show) visible++;
+  }
+  if (matchCountEl) {
+    const isFiltered = filterKey !== 'all' || query;
+    matchCountEl.textContent = isFiltered ? `${visible} of ${cards.length}` : '';
   }
 }
 
@@ -153,6 +175,7 @@ function appendCards(grid, playlists, onSelect, userId, counts) {
       class: 'playlist-card',
       'data-category': category,
       'data-collab': playlist.collaborative ? '1' : '',
+      'data-name': playlist.name.toLowerCase(),
       on: { click: () => onSelect(playlist) },
     },
       imageEl,
