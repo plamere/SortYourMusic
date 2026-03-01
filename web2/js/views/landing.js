@@ -8,15 +8,21 @@ export function renderLanding(container) {
     el('div', { class: 'hero-card' },
       el('h1', { class: 'hero-title' }, 'Sort Your Music'),
       el('p', { class: 'hero-description' },
-        'Sort your Spotify playlists by any of a wide range of musical attributes such as tempo, loudness, valence, energy, danceability, popularity and more. Now with ',
-        el('strong', {}, 'Filters'),
-        '!'
+        'Sort your Spotify playlists by any of a wide range of musical attributes such as tempo, loudness, valence, energy, danceability, popularity and more.'
       ),
       el('p', { class: 'hero-prompt' }, 'Login with your Spotify account to get started'),
       el('button', {
         class: 'btn btn--primary btn--lg',
         on: { click: () => redirectToSpotifyAuth() },
-      }, 'Login with Spotify')
+      }, 'Login with Spotify'),
+      el('div', { class: 'hero-trust' },
+        el('p', {}, 'Sorting playlists since 2012 · Millions of playlists sorted'),
+        el('p', {},
+          'Open source on ',
+          el('a', { href: 'https://github.com/plamere/SortYourMusic', target: '_blank', rel: 'noopener' }, 'GitHub'),
+          ' · Runs entirely in your browser'
+        )
+      )
     )
   );
 
