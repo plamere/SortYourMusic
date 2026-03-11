@@ -95,7 +95,7 @@
 
 /* Table */
 .track-table {
-  width: 100%;
+  min-width: 1200px;
   table-layout: fixed;
   background: var(--color-surface-raised);
   border-radius: var(--radius-md);
@@ -103,10 +103,10 @@
 
 /* Column widths */
 .track-table colgroup .col-order    { width: 40px; }
-.track-table colgroup .col-title    { width: auto; }
-.track-table colgroup .col-artist   { width: 12%; }
+.track-table colgroup .col-title    { width: 200px; }
+.track-table colgroup .col-artist   { width: 150px; }
 .track-table colgroup .col-release  { width: 100px; }
-.track-table colgroup .col-num      { min-width: 56px; width: 66px; }
+.track-table colgroup .col-num      { width: 66px; }
 
 .track-table thead th {
   background: var(--color-surface-raised);
