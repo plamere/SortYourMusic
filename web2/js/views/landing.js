@@ -13,7 +13,11 @@ export function renderLanding(container) {
       el('p', { class: 'hero-prompt' }, 'Login with your Spotify account to get started'),
       el('button', {
         class: 'btn btn--primary btn--lg',
-        on: { click: () => redirectToSpotifyAuth() },
+          on: { click: () => {
+            const forceDialog = localStorage.getItem('force_show_dialog') === 'true';
+            localStorage.removeItem('force_show_dialog');
+            redirectToSpotifyAuth(forceDialog);
+        }},
       }, 'Login with Spotify'),
       el('div', { class: 'hero-trust' },
         el('p', {}, 'Sorting playlists since 2012 · Millions of playlists sorted'),
