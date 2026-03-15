@@ -21,7 +21,7 @@ function base64urlEncode(buffer) {
     .replace(/\//g, '_');
 }
 
-export async function redirectToSpotifyAuth() {
+export async function redirectToSpotifyAuth(showDialog = false) {
   const codeVerifier = generateRandomString(64);
   localStorage.setItem('code_verifier', codeVerifier);
 
@@ -35,6 +35,7 @@ export async function redirectToSpotifyAuth() {
     redirect_uri: SPOTIFY_REDIRECT_URI,
     code_challenge_method: 'S256',
     code_challenge: codeChallenge,
+    show_dialog: String(showDialog),
   });
 
   window.location.href = `https://accounts.spotify.com/authorize?${params}`;
@@ -114,4 +115,5 @@ export function hasValidToken() {
 export function clearTokens() {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem('code_verifier');
+  localStorage.setItem('force_show_dialog', 'true');
 }
